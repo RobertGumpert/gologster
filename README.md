@@ -14,12 +14,7 @@ Simultaneous recording of one message to a file and to the console, with the abi
 
 The object through which logging is performed is 'UserInterface'. This object needs to be created only once in the application and passed the pointer to other packages.
 
-## Базовая настройка.
-
-В базовой настройке доступен только вывод в консоль. Все остальные настройки устанавливаются после получения базовой настройки.
-
-In the basic setting, only console output is available. All other settings are set after receiving the basic setting.
-
+**Создаём глобальный объект, настраиваем его, передаём его дальше. | We create a global object, set it up, and pass it on : **
 ```go
 // Создаёт логгер в точке входа.
 // Creates a logger at the entry point.
@@ -36,9 +31,22 @@ import (
 // We create a basic gologger in which only output to the console is available.
 var logs = gologger.Default()
 
+func main() {
 
-[OTHER PACKAGE]:
+	// Выполним логирование, в этом же потоке.
+	// Let's perform logging in the same thread.
+	logs.Info("App is started!")
 
+	mypackage.SetLogs(logs)
+	mypackage.PrintNumbers(10)
+	time.Sleep(5 * time.Second)
+
+	logs.Info("App has terminated!")
+}
+
+```
+**Получаем глобальный объект в других пакетах. | Getting the global object in other packages :**
+```go
 
 // Передаём объект логгера в другие пакеты.
 // We transfer the logger object to other packages.
@@ -57,8 +65,13 @@ var (
 func SetLogs(main *gologger.LogInterface) {
 	logs = main
 }
-
 ```
+
+## Базовая настройка.
+
+В базовой настройке доступен только вывод в консоль. Все остальные настройки устанавливаются после получения базовой настройки.
+
+In the basic setting, only console output is available. All other settings are set after receiving the basic setting.
 
 **Базовая настройка | Basic setting :**
 ```go

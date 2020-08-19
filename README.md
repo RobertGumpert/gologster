@@ -43,7 +43,7 @@ func (logger *loggerFileMultithreading) receiver(file fileAgent) {
 ![alt text](https://github.com/RobertGumpert/gologger/blob/master/examples/channel.png)
 
 
-**Запись стандартного пакета 'log'**
+**Запись с помощью стандартного пакета 'log'**
 
 Используется стандартный пакет 'log', который разрешает состояние гонки с помощью мьютексов.
 

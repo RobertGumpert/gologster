@@ -14,7 +14,7 @@ Simultaneous recording of one message to a file and to the console, with the abi
 
 The object through which logging is performed is 'UserInterface'. This object needs to be created only once in the application and passed the pointer to other packages.
 
-**Базовая настройка.**
+## Базовая настройка.
 
 В базовой настройке доступен только вывод в консоль. Все остальные настройки устанавливаются после получения базовой настройки.
 

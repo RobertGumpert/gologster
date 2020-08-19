@@ -1,0 +1,7 @@
+goos: windows
+goarch: amd64
+BenchmarkAsync-4            2400           8440756 ns/op            3430 B/op         14 allocs/op
+PASS
+ok      _/C_/GoRepositories/GoLogger/logger     20.744s
+
+Записанных строк 1424. Время выполнения 17.663

@@ -1,0 +1,3 @@
+level=[INFO];value=["App is Started!"];date=[Wed Aug 19 21:41:22 2020];
+level=[ERROR];value=["Message is empty"];date=[Wed Aug 19 21:41:36 2020];
+level=[ERROR];value=["Message is empty"];date=[Wed Aug 19 21:41:47 2020];

@@ -1,0 +1,7 @@
+goos: windows
+goarch: amd64
+BenchmarkBasic-4             198           7313903 ns/op            1428 B/op         17 allocs/op
+PASS
+ok      _/C_/GoRepositories/GoLogger/logger     2.175s
+
+Записанных строк 220. Время 2.175

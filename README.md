@@ -114,6 +114,36 @@ type Option func(param ...string)
 
 ```
 
+Список функций настройки вывода ('Option'):
+
+- gologger.Console : возвращает 'Mode' соответствующий 'loggerConsoleSinglethreading'. Вызов в том же потоке.
+
+- gologger.GoConsole : возвращает 'Mode' соответствующий 'loggerConsoleSinglethreading'. Вызов в отдельном потоке.
+
+- gologger.FileMulti : возвращает 'Mode' соответствующий 'loggerFileMultithreading'. Вызов в том же потоке.
+
+- gologger.GoFileMulti : возвращает 'Mode' соответствующий 'loggerFileMultithreading'. Вызов в отдельном потоке.
+
+- gologger.FileMutex : возвращает 'Mode' соответствующий 'loggerFileMutex'. Вызов в том же потоке.
+
+- gologger.GoFileMutex : возвращает 'Mode' соответствующий 'loggerFileMutex'. Вызов в отдельном потоке.
+
+
+Output Setting ('Option') Function List:
+
+- gologger.Console: returns 'Mode' corresponding to 'loggerConsoleSinglethreading'. Call on the same thread.
+
+- gologger.GoConsole: returns 'Mode' corresponding to 'loggerConsoleSinglethreading'. Call in a separate thread.
+
+- gologger.FileMulti: returns 'Mode' corresponding to 'loggerFileMultithreading'. Call on the same thread.
+
+- gologger.GoFileMulti: returns 'Mode' corresponding to 'loggerFileMultithreading'. Call in a separate thread.
+
+- gologger.FileMutex: returns 'Mode' corresponding to 'loggerFileMutex'. Call on the same thread.
+
+- gologger.GoFileMutex: returns 'Mode' corresponding to 'loggerFileMutex'. Call in a separate thread.
+
+
 **Вывод в отдельном потоке. | Output in a separate thread :**
 ```go
 

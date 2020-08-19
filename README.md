@@ -14,7 +14,7 @@ Simultaneous recording of one message to a file and to the console, with the abi
 
 The object through which logging is performed is 'UserInterface'. This object needs to be created only once in the application and passed the pointer to other packages.
 
-**Создаём глобальный объект, настраиваем его, передаём его дальше. | We create a global object, set it up, and pass it on : **
+**ПРИМЕР: Создаём глобальный объект, настраиваем его, передаём его дальше. | EXAMPLE: We create a global object, set it up, and pass it on : **
 ```go
 // Создаёт логгер в точке входа.
 // Creates a logger at the entry point.
@@ -45,7 +45,7 @@ func main() {
 }
 
 ```
-**Получаем глобальный объект в других пакетах. | Getting the global object in other packages :**
+**ПРИМЕР: Получаем глобальный объект в других пакетах. | EXAMPLE: Getting the global object in other packages :**
 ```go
 
 // Передаём объект логгера в другие пакеты.
@@ -73,7 +73,7 @@ func SetLogs(main *gologger.LogInterface) {
 
 In the basic setting, only console output is available. All other settings are set after receiving the basic setting.
 
-**Базовая настройка | Basic setting :**
+**ПРИМЕР: Базовая настройка | EXAMPLE: Basic setting :**
 ```go
 
 // Создаём базового логгера, в котором доступен только вывод в консоль.
@@ -112,6 +112,20 @@ type Mode func(logger *LogInterface, value interface{}, lvl level, date string)
 //
 type Option func(param ...string)
 
+// 'Option' which return 'Mode'
+func Console(param ...string) Mode {
+	return func(logger *LogInterface, value interface{}, lvl level, date string) {
+		logger.modeConsole.add(value, lvl, date, param...)
+	}
+}
+
+// 'Option' which return 'Mode'
+func GoConsole(param ...string) Mode {
+	return func(logger *LogInterface, value interface{}, lvl level, date string) {
+		go logger.modeConsole.add(value, lvl, date, param...)
+	}
+}
+
 ```
 
 Список функций настройки вывода ('Option'):
@@ -144,7 +158,7 @@ Output Setting ('Option') Function List:
 - gologger.GoFileMutex: returns 'Mode' corresponding to 'loggerFileMutex'. Call in a separate thread.
 
 
-**Вывод в отдельном потоке. | Output in a separate thread :**
+**ПРИМЕР: Вывод в отдельном потоке. | EXAMPLE: Output in a separate thread :**
 ```go
 
 func PrintNumbers(num int) {

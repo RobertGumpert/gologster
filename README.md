@@ -42,6 +42,32 @@ func main() {
 
 ```
 
+**Базовая настройка. Вывод в отдельном потоке. | Basic setting. Basic setup. Output in a separate thread :**
+```go
+
+func PrintNumbers(num int) {
+
+	prev := new(number)
+
+	for i := 0; i < num; i++ {
+
+		currentNumber := &number{
+			Value: i,
+			Prev:  prev,
+		}
+
+		// Распечатаем сообщение в отдельном потоке.
+		// Let's print the message in a separate thread.
+		logs.Info(currentNumber, gologger.GoConsole())
+
+		prev = currentNumber
+	}
+
+	logs.Info("Print all numbers : " + strconv.Itoa(num))
+}
+
+```
+
 # Особенности | Features.
 
 Для записи в файл существует две реализации:

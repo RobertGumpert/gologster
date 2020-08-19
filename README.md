@@ -20,7 +20,7 @@ The object through which logging is performed is 'UserInterface'. This object ne
 
 In the basic setting, only console output is available. All other settings are set after receiving the basic setting.
 
-*Базовая настройка | Basic setting :*
+**Базовая настройка | Basic setting :**
 ```go
 
 // Создаём базового логгера, в котором доступен только вывод в консоль.

@@ -14,7 +14,7 @@ Simultaneous recording of one message to a file and to the console, with the abi
 
 The object through which logging is performed is 'UserInterface'. This object needs to be created only once in the application and passed the pointer to other packages.
 
-**ПРИМЕР: Создаём глобальный объект, настраиваем его, передаём его дальше. | EXAMPLE: We create a global object, set it up, and pass it on : **
+**ПРИМЕР: Создаём глобальный объект, настраиваем его, передаём его дальше. | EXAMPLE: We create a global object, set it up, and pass it on :**
 ```go
 // Создаёт логгер в точке входа.
 // Creates a logger at the entry point.

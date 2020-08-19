@@ -40,6 +40,10 @@ func main() {
 	logs.Info("App has terminated!")
 }
 
+[OUTPUT]:
+2020/08/19 23:31:59 level=[INFO];value=["App is started!"];date=[Wed Aug 19 23:31:59 2020];
+2020/08/19 23:31:59 level=[INFO];value=["Print all numbers : 10"];date=[Wed Aug 19 23:31:59 2020];
+
 ```
 
 # Особенности | Features.

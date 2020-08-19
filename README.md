@@ -20,7 +20,7 @@ The object through which logging is performed is 'UserInterface'. This object ne
 
 In the basic setting, only console output is available. All other settings are set after receiving the basic setting.
 
-Базовая настройка | Basic setting :
+*Базовая настройка | Basic setting :*
 ```go
 
 // Создаём базового логгера, в котором доступен только вывод в консоль.
@@ -60,7 +60,7 @@ func main() {
 A feature of this solution is that for each of the files, a buffered channel is created for 1000 elements (lines that must be written to the file).
 For each such channel, a reader goroutine is launched in a separate thread, which has the right to call the function of writing to the file, which guarantees that a race situation does not arise. The 1000-element buffer is theoretically large enough to prevent writers from queuing up to write to the channel buffer.
 
-Горутина-читатель | goroutine-reader :
+*Горутина-читатель | goroutine-reader :*
 ```go
 func (logger *loggerFileMultithreading) receiver(file fileAgent) {
 	for outputString := range file.channel {
@@ -79,7 +79,7 @@ func (logger *loggerFileMultithreading) receiver(file fileAgent) {
 After opening the file, it creates a temporary buffer to write to. Next, the fsync() system call is called to collect the file system buffers to disk.
 After writing the content to the buffer, the data is flushed to the file via '(*io.Writer).Flush()'.
 
-Запись в файл | Write to file :
+*Запись в файл | Write to file :*
 ```go
 func (logger *loggerFileMultithreading) output(out *outputString, param ...string) error {
 	var (
@@ -125,7 +125,7 @@ func (logger *loggerFileMultithreading) output(out *outputString, param ...strin
 
 The standard package 'log' is used, which resolves race conditions using mutexes.
 
-Запись в файл | Write to file :
+*Запись в файл | Write to file :*
 ```go
 func (logger *loggerFileMutex) output(out *outputString, param ...string) error {
 	var (

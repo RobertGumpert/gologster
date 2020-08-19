@@ -23,7 +23,7 @@ Simultaneous recording of one message to a file and to the console, with the abi
 что гарантирует то, что не возникнет ситуация гонки. Буффер на 1000 элементов теоритически достаточно большой, для того чтобы горутины писатели не вставали в очередь
 на запись в буффер канала.
 
-Горутины-читатель | goroutine-reader
+Горутина-читатель | goroutine-reader
 ```
 func (logger *loggerFileMultithreading) receiver(file fileAgent) {
 	for outputString := range file.channel {

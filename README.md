@@ -23,6 +23,9 @@ Simultaneous recording of one message to a file and to the console, with the abi
 что гарантирует то, что не возникнет ситуация гонки. Буффер на 1000 элементов теоритически достаточно большой, для того чтобы горутины писатели не вставали в очередь
 на запись в буффер канала.
 
+A feature of this solution is that for each of the files, a buffered channel is created for 1000 elements (lines that must be written to the file).
+For each such channel, a reader goroutine is launched in a separate thread, which has the right to call the function of writing to the file, which guarantees that a race situation does not arise. The 1000-element buffer is theoretically large enough to prevent writers from queuing up to write to the channel buffer.
+
 Горутина-читатель | goroutine-reader
 ```
 func (logger *loggerFileMultithreading) receiver(file fileAgent) {
@@ -36,7 +39,38 @@ func (logger *loggerFileMultithreading) receiver(file fileAgent) {
 }
 ```
 
-A feature of this solution is that for each of the files, a buffered channel is created for 1000 elements (lines that must be written to the file).
-For each such channel, a reader goroutine is launched in a separate thread, which has the right to call the function of writing to the file, which guarantees that a race situation does not arise. The 1000-element buffer is theoretically large enough to prevent writers from queuing up to write to the channel buffer.
 
 ![alt text](https://github.com/RobertGumpert/gologger/blob/master/examples/channel.png)
+
+
+**Запись стандартного пакета 'log'**
+
+Используется стандартный пакет 'log', который разрешает состояние гонки с помощью мьютексов.
+
+The standard package 'log' is used, which resolves race conditions using mutexes.
+
+Запись в файл | Write to file
+```
+func (logger *loggerFileMutex) output(out *outputString, param ...string) error {
+	var (
+		path      = param[0]
+		closeFile = func(file *os.File, err error) error {
+			errFile := file.Close()
+			if errFile != nil {
+				err = errors.New(strings.Join([]string{
+					err.Error(),
+					errFile.Error(),
+				}, "::"))
+			}
+			return err
+		}
+	)
+	file, err := os.OpenFile(path, os.O_APPEND, 0666)
+	if err != nil {
+		return closeFile(file, nil)
+	}
+	log.SetOutput(file)
+	log.Print(*out)
+	return closeFile(file, nil)
+}
+```

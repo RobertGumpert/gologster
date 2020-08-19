@@ -66,6 +66,20 @@ func PrintNumbers(num int) {
 	logs.Info("Print all numbers : " + strconv.Itoa(num))
 }
 
+[OUTPUT]:
+2020/08/19 23:31:59 level=[INFO];value=["App is started!"];date=[Wed Aug 19 23:31:59 2020];
+2020/08/19 23:31:59 level=[INFO];value=["Print all numbers : 10"];date=[Wed Aug 19 23:31:59 2020];
+2020/08/19 23:31:59 level=[INFO];value=[{"Value":4,"Prev":{"Value":3,"Prev":{"Value":2,"Prev":{"Value":1,"Prev":{"Value":0,"Prev":{"Value":0,"Prev":null}}}}}}];date=[Wed Aug 19 23:31:59 2020];
+2020/08/19 23:31:59 level=[INFO];value=[{"Value":3,"Prev":{"Value":2,"Prev":{"Value":1,"Prev":{"Value":0,"Prev":{"Value":0,"Prev":null}}}}}];date=[Wed Aug 19 23:31:59 2020];
+2020/08/19 23:31:59 level=[INFO];value=[{"Value":0,"Prev":{"Value":0,"Prev":null}}];date=[Wed Aug 19 23:31:59 2020];
+2020/08/19 23:31:59 level=[INFO];value=[{"Value":6,"Prev":{"Value":5,"Prev":{"Value":4,"Prev":{"Value":3,"Prev":{"Value":2,"Prev":{"Value":1,"Prev":{"Value":0,"Prev":{"Value":0,"Prev":null}}}}}}}}];date=[Wed Aug 19 23:31:59 2020];
+2020/08/19 23:31:59 level=[INFO];value=[{"Value":9,"Prev":{"Value":8,"Prev":{"Value":7,"Prev":{"Value":6,"Prev":{"Value":5,"Prev":{"Value":4,"Prev":{"Value":3,"Prev":{"Value":2,"Prev":{"Value":1,"Prev":{"Value":0,"Prev":{"Value":0,"Prev":null}}}}}}}}}}}];date=[Wed Aug 19 23:31:59 2020];
+2020/08/19 23:31:59 level=[INFO];value=[{"Value":2,"Prev":{"Value":1,"Prev":{"Value":0,"Prev":{"Value":0,"Prev":null}}}}];date=[Wed Aug 19 23:31:59 2020];
+2020/08/19 23:31:59 level=[INFO];value=[{"Value":1,"Prev":{"Value":0,"Prev":{"Value":0,"Prev":null}}}];date=[Wed Aug 19 23:31:59 2020];
+2020/08/19 23:31:59 level=[INFO];value=[{"Value":8,"Prev":{"Value":7,"Prev":{"Value":6,"Prev":{"Value":5,"Prev":{"Value":4,"Prev":{"Value":3,"Prev":{"Value":2,"Prev":{"Value":1,"Prev":{"Value":0,"Prev":{"Value":0,"Prev":null}}}}}}}}}}];date=[Wed Aug 19 23:31:59 2020];
+2020/08/19 23:31:59 level=[INFO];value=[{"Value":7,"Prev":{"Value":6,"Prev":{"Value":5,"Prev":{"Value":4,"Prev":{"Value":3,"Prev":{"Value":2,"Prev":{"Value":1,"Prev":{"Value":0,"Prev":{"Value":0,"Prev":null}}}}}}}}}];date=[Wed Aug 19 23:31:59 2020];
+2020/08/19 23:31:59 level=[INFO];value=[{"Value":5,"Prev":{"Value":4,"Prev":{"Value":3,"Prev":{"Value":2,"Prev":{"Value":1,"Prev":{"Value":0,"Prev"{"Value":0,"Prev":null}}}}}}}];date=[Wed Aug 19 23:31:59 2020];
+
 ```
 
 # Особенности | Features.

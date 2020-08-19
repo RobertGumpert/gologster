@@ -1,12 +1,12 @@
 package mypackage
 
 import (
-	"../../../logger"
+	gologger "../../.."
 	"strconv"
 )
 
 var (
-	logs *logger.LogInterface
+	logs *gologger.LogInterface
 )
 
 type number struct {
@@ -14,7 +14,7 @@ type number struct {
 	Prev  *number
 }
 
-func SetLogs(main *logger.LogInterface) {
+func SetLogs(main *gologger.LogInterface) {
 	logs = main
 }
 
@@ -31,7 +31,7 @@ func PrintNumbers(num int) {
 
 		// Распечатаем сообщение в отдельном потоке.
 		// Let's print the message in a separate thread.
-		logs.Info(currentNumber, logger.GoConsole())
+		logs.Info(currentNumber, gologger.GoConsole())
 
 		prev = currentNumber
 	}

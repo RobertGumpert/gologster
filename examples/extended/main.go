@@ -1,7 +1,7 @@
 package main
 
 import (
-	"../../logger"
+	gologger "../.."
 	"bufio"
 	"os"
 	"path/filepath"
@@ -28,7 +28,7 @@ func main() {
 	// кроме вывода в консоль, его выполним в отдельном потоке.
 	// Let's perform logging, in all the established ways, in the same thread,
 	// except for output to the console, we will execute it in a separate thread.
-	logs.Info("App is Started!", logger.GoConsole(), logger.FileMulti("file_1"), logger.FileMutex("file_2"))
+	logs.Info("App is Started!", gologger.GoConsole(), gologger.FileMulti("file_1"), gologger.FileMutex("file_2"))
 
 	for scanner.Scan() {
 
@@ -38,21 +38,21 @@ func main() {
 
 			// Выполним логирование в консоль, в том же потоке, а в файл с помощью каналов (GoFileMulti), выполним в отдельном потоке.
 			// Let's log into the console, in the same thread, and to a file using channels (GoFileMulti), we'll execute it in a separate thread.
-			logs.Error("Message is empty", logger.Console(), logger.GoFileMulti("file_1"))
+			logs.Error("Message is empty", gologger.Console(), gologger.GoFileMulti("file_1"))
 		} else {
 
 			// Выполним логирование в консоль и в файл, с помощью стандартного логгера (GoFileMutex), выполним в отдельном потоке.
 			// Let's log into the console and into a file using a standard logger (GoFileMutex), and execute it in a separate thread.
-			logs.Info(message, logger.GoConsole(), logger.GoFileMutex("file_2"))
+			logs.Info(message, gologger.GoConsole(), gologger.GoFileMutex("file_2"))
 		}
 	}
 }
 
-func settings(files map[string]string) *logger.LogInterface {
+func settings(files map[string]string) *gologger.LogInterface {
 
 	// Создаём базового логгера. Добавляем файлы для логирования.
 	// We create a basic logger. Add files for logging.
-	logs := logger.Default().ConfigFile(files)
+	logs := gologger.Default().ConfigFile(files)
 
 	// Устанавливаем режим запись через каналы.
 	// We set the recording mode through channels.

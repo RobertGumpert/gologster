@@ -67,7 +67,7 @@ func SetLogs(main *gologger.LogInterface) {
 }
 ```
 
-## Базовая настройка.
+## Базовая настройка. | Basic setting. 
 
 В базовой настройке доступен только вывод в консоль. Все остальные настройки устанавливаются после получения базовой настройки.
 
@@ -196,6 +196,32 @@ func PrintNumbers(num int) {
 2020/08/19 23:31:59 level=[INFO];value=[{"Value":7,"Prev":{"Value":6,"Prev":{"Value":5,"Prev":{"Value":4,"Prev":{"Value":3,"Prev":{"Value":2,"Prev":{"Value":1,"Prev":{"Value":0,"Prev":{"Value":0,"Prev":null}}}}}}}}}];date=[Wed Aug 19 23:31:59 2020];
 2020/08/19 23:31:59 level=[INFO];value=[{"Value":5,"Prev":{"Value":4,"Prev":{"Value":3,"Prev":{"Value":2,"Prev":{"Value":1,"Prev":{"Value":0,"Prev"{"Value":0,"Prev":null}}}}}}}];date=[Wed Aug 19 23:31:59 2020];
 
+```
+## Настройка под работу с файлами. | Setting for working with files.
+
+Расширяем настройки базового 'LogInterface' для работы с файлами.
+
+Expanding the basic 'LogInterface' settings for working with files.
+
+**ПРИМЕР: Настройка под работу с файлами. | EXAMPLE: Setting for working with files :**
+
+```go
+func settings(files map[string]string) *gologger.LogInterface {
+
+	// Создаём базового логгера. Добавляем файлы для логирования.
+	// We create a basic logger. Add files for logging.
+	logs := gologger.Default().ConfigFile(files)
+
+	// Устанавливаем режим запись через каналы.
+	// We set the recording mode through channels.
+	logs.SetModeFileMulti()
+
+	// Устанавливаем режим записи через логгер из стандартной библиотеки
+	// We set the recording mode through the logger from the standard library
+	logs.SetModeFileMutex()
+
+	return logs
+}
 ```
 
 # Особенности | Features.

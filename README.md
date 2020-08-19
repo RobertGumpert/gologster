@@ -32,17 +32,13 @@ func main() {
 	// Выполним логирование, в этом же потоке.
 	// Let's perform logging in the same thread.
 	logs.Info("App is started!")
-
-	mypackage.SetLogs(logs)
-	mypackage.PrintNumbers(10)
-	time.Sleep(5 * time.Second)
-
+	
 	logs.Info("App has terminated!")
 }
 
 [OUTPUT]:
 2020/08/19 23:31:59 level=[INFO];value=["App is started!"];date=[Wed Aug 19 23:31:59 2020];
-2020/08/19 23:31:59 level=[INFO];value=["Print all numbers : 10"];date=[Wed Aug 19 23:31:59 2020];
+2020/08/19 23:31:59 level=[INFO];value=["App has terminated!"];date=[Wed Aug 19 23:31:59 2020];
 
 ```
 

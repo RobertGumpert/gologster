@@ -246,6 +246,61 @@ func settings(files map[string]string) *gologger.LogInterface {
 }
 ```
 
+**ПРИМЕР: Запись в разные накопители. | EXAMPLE: Writing to different drives :**
+```go
+func main() {
+	scanner := bufio.NewScanner(os.Stdin)
+
+	logs := settings(loggingFiles)
+
+	logs.Info("Logger wes set!")
+
+	// Выполним логирование, всеми установленными способами, в этом же потоке,
+	// кроме вывода в консоль, его выполним в отдельном потоке.
+	// Let's perform logging, in all the established ways, in the same thread,
+	// except for output to the console, we will execute it in a separate thread.
+	logs.Info("App is Started!", gologger.GoConsole(), gologger.FileMulti("file_1"), gologger.FileMutex("file_2"))
+
+	for scanner.Scan() {
+
+		message := scanner.Text()
+
+		if message == "" {
+
+			// Выполним логирование в консоль, в том же потоке, а в файл с помощью каналов (GoFileMulti), выполним в отдельном потоке.
+			// Let's log into the console, in the same thread, and to a file using channels (GoFileMulti), we'll execute it in a separate thread.
+			logs.Error("Message is empty", gologger.Console(), gologger.GoFileMulti("file_1"))
+		} else {
+
+			// Выполним логирование в консоль и в файл, с помощью стандартного логгера (GoFileMutex), выполним в отдельном потоке.
+			// Let's log into the console and into a file using a standard logger (GoFileMutex), and execute it in a separate thread.
+			logs.Info(message, gologger.GoConsole(), gologger.GoFileMutex("file_2"))
+		}
+	}
+}
+
+[OUTPUT]:
+2020/08/20 00:28:03 level=[INFO];value=["LogInterface message : from 'SetModeFileMulti()' mode was set"];date=[Thu Aug 20 00:28:03 2020];
+2020/08/20 00:28:03 level=[INFO];value=["LogInterface message : from 'SetModeFileMutex()' mode was set"];date=[Thu Aug 20 00:28:03 2020];
+2020/08/20 00:28:03 level=[INFO];value=["Logger wes set!"];date=[Thu Aug 20 00:28:03 2020];
+2020/08/20 00:28:03 level=[INFO];value=["App is Started!"];date=[Thu Aug 20 00:28:03 2020];
+Hello World!
+2020/08/20 00:28:20 level=[INFO];value=["Hello World!"];date=[Thu Aug 20 00:28:20 2020];
+
+2020/08/20 00:28:22 level=[ERROR];value=["Message is empty"];date=[Thu Aug 20 00:28:22 2020];
+Goodbye world!
+2020/08/20 00:28:34 level=[INFO];value=["Godbye world!"];date=[Thu Aug 20 00:28:34 2020];
+
+[file_1]:
+level=[INFO];value=["App is Started!"];date=[Thu Aug 20 00:28:03 2020];
+level=[ERROR];value=["Message is empty"];date=[Thu Aug 20 00:28:22 2020];
+
+[file_2]:
+2020/08/20 00:28:03 level=[INFO];value=["App is Started!"];date=[Thu Aug 20 00:28:03 2020];
+2020/08/20 00:28:20 level=[INFO];value=["Hello World!"];date=[Thu Aug 20 00:28:20 2020];
+2020/08/20 00:28:34 level=[INFO];value=["Goodbye world!"];date=[Thu Aug 20 00:28:34 2020];
+```
+
 # Особенности | Features.
 
 Для записи в файл существует две реализации:

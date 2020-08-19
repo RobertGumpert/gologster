@@ -99,7 +99,7 @@ func main() {
 
 The user interface uses the 'Functional options' programming pattern. Options ('Option') pop out as functions that return 'Mode' functions. The 'Mode' functions, in turn, call the 'add' method of a specific logger that implements the 'iLogger' interface (the object is stored in the global user object 'LogInterface').Usually this pattern is used to create new objects, but in this case only to select the log output.
 
-**Сигнатура функции настройки вывода | Output customization function signature :**
+**ТАК РАБОТАЕТ: Сигнатура функции настройки вывода | IMPLEMENTATION: Output customization function signature :**
 
 ```go
 // Mode : в теле содержит вызов метода 'add' конкретного логгера.
@@ -206,7 +206,7 @@ func PrintNumbers(num int) {
 
 - с помощью стандартного пакета 'log'.
 
-**Запись в файл через каналы.**
+## Запись в файл через каналы.
 
 Особенностью этого решения является то, что для каждого из файлов создаётся буфферизированный канал на 1000 элементов (строк, которые надо записать в файл).
 Для каждого такого канала, запускается в отдельном потоке горутина-читатель, которая имеет право вызвать функцию записи в файл,
@@ -216,7 +216,7 @@ func PrintNumbers(num int) {
 A feature of this solution is that for each of the files, a buffered channel is created for 1000 elements (lines that must be written to the file).
 For each such channel, a reader goroutine is launched in a separate thread, which has the right to call the function of writing to the file, which guarantees that a race situation does not arise. The 1000-element buffer is theoretically large enough to prevent writers from queuing up to write to the channel buffer.
 
-*Горутина-читатель | goroutine-reader :*
+**ТАК РАБОТАЕТ: Горутина-читатель | IMPLEMENTATION: goroutine-reader :**
 ```go
 func (logger *loggerFileMultithreading) receiver(file fileAgent) {
 	for outputString := range file.channel {
@@ -235,7 +235,7 @@ func (logger *loggerFileMultithreading) receiver(file fileAgent) {
 After opening the file, it creates a temporary buffer to write to. Next, the fsync() system call is called to collect the file system buffers to disk.
 After writing the content to the buffer, the data is flushed to the file via '(*io.Writer).Flush()'.
 
-*Запись в файл | Write to file :*
+**ТАК РАБОТАЕТ: Запись в файл | IMPLEMENTATION: Write to file :**
 ```go
 func (logger *loggerFileMultithreading) output(out *outputString, param ...string) error {
 	var (
@@ -275,13 +275,13 @@ func (logger *loggerFileMultithreading) output(out *outputString, param ...strin
 ![alt text](https://github.com/RobertGumpert/gologger/blob/master/examples/channel.png)
 
 
-**Запись с помощью стандартного пакета 'log'.**
+## Запись с помощью стандартного пакета 'log'.
 
 Используется стандартный пакет 'log', который разрешает состояние гонки с помощью мьютексов.
 
 The standard package 'log' is used, which resolves race conditions using mutexes.
 
-*Запись в файл | Write to file :*
+**ТАК РАБОТАЕТ: Запись в файл | IMPLEMENTATION: Write to file :**
 ```go
 func (logger *loggerFileMutex) output(out *outputString, param ...string) error {
 	var (

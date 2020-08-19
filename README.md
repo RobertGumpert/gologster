@@ -8,6 +8,29 @@
 The logger was created so that with one call to the logging function, it was possible to write to different drives (hard disk, console) at once.
 Simultaneous recording of one message to a file and to the console, with the ability to write in a separate stream, for example, only to a file, and to the console, only in the stream where the recording function was called, or write everything in a separate stream, without worrying about the output format, so how the logger itself creates the output string in the desired format.
 
+# Примеры | Examples
+
+```go
+
+// Создаём базового логгера, в котором доступен только вывод в консоль.
+// We create a basic gologger in which only output to the console is available.
+var logs = gologger.Default()
+
+func main() {
+
+	// Выполним логирование, в этом же потоке.
+	// Let's perform logging in the same thread.
+	logs.Info("App is started!")
+
+	mypackage.SetLogs(logs)
+	mypackage.PrintNumbers(10)
+	time.Sleep(5 * time.Second)
+
+	logs.Info("App has terminated!")
+}
+
+```
+
 # Особенности | Features.
 
 Для записи в файл существует две реализации:

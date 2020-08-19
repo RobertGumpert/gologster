@@ -39,11 +39,53 @@ func (logger *loggerFileMultithreading) receiver(file fileAgent) {
 }
 ```
 
+После открытия файла, создаёт временный буффер,в который будет выполняться запись.Следом, вызывается системный вызов fsync(),для сборса буферов файловой системы на диск.
+После записи содержимого в буффер, данные сбрасываются в файл через '(*io.Writer).Flush()'.
+
+After opening the file, it creates a temporary buffer to write to. Next, the fsync() system call is called to collect the file system buffers to disk.
+After writing the content to the buffer, the data is flushed to the file via '(*io.Writer).Flush()'.
+
+Запись в файл | Write to file
+```
+func (logger *loggerFileMultithreading) output(out *outputString, param ...string) error {
+	var (
+		path      = param[0]
+		closeFile = func(file *os.File, err error) error {
+			errFile := file.Close()
+			if errFile != nil {
+				err = errors.New(strings.Join([]string{
+					err.Error(),
+					errFile.Error(),
+				}, "::"))
+			}
+			return err
+		}
+	)
+	file, err := os.OpenFile(path, os.O_APPEND, 0666)
+	if err != nil {
+		return err
+	}
+	buffer := bufio.NewWriter(file)
+	err = file.Sync()
+	if err != nil {
+		return closeFile(file, err)
+	}
+	_, err = buffer.WriteString(string(*out) + "\n")
+	if err != nil {
+		return closeFile(file, err)
+	}
+	err = buffer.Flush()
+	if err != nil {
+		return closeFile(file, err)
+	}
+	return closeFile(file, nil)
+}
+```
 
 ![alt text](https://github.com/RobertGumpert/gologger/blob/master/examples/channel.png)
 
 
-**Запись с помощью стандартного пакета 'log'**
+**Запись с помощью стандартного пакета 'log'.**
 
 Используется стандартный пакет 'log', который разрешает состояние гонки с помощью мьютексов.
 

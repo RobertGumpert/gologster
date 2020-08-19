@@ -95,7 +95,26 @@ func main() {
 
 ```
 
-**Базовая настройка. Вывод в отдельном потоке. | Basic setting. Basic setup. Output in a separate thread :**
+Для пользовательского интерфейса используется паттерн программирования 'Functional options'. Опции ('Option') выстыпают в качестве функций, которые возвращают функции 'Mode'. Функции 'Mode', в свою очередь вызывают метод 'add' у конкретного логгера реализующего интерфейс 'iLogger' (объект хранится в глобальном пользовательском объекте 'LogInterface'). Обычно этот паттерн используется для создания новых объектов, но в данном случае только выбора вывода лога.
+
+The user interface uses the 'Functional options' programming pattern. Options ('Option') pop out as functions that return 'Mode' functions. The 'Mode' functions, in turn, call the 'add' method of a specific logger that implements the 'iLogger' interface (the object is stored in the global user object 'LogInterface').Usually this pattern is used to create new objects, but in this case only to select the log output.
+
+**Сигнатура функции настройки вывода | Output customization function signature :**
+
+```go
+// Mode : в теле содержит вызов метода 'add' конкретного логгера.
+//        in the body contains a call to the 'add' method of a particular logger.
+//
+type Mode func(logger *LogInterface, value interface{}, lvl level, date string)
+
+// Option : возвращает 'Mode' соответствующий  выбранной пользователем опции.
+//          returns 'Mode' corresponding to the option selected by the user.
+//
+type Option func(param ...string)
+
+```
+
+**Вывод в отдельном потоке. | Output in a separate thread :**
 ```go
 
 func PrintNumbers(num int) {

@@ -16,5 +16,14 @@ Simultaneous recording of one message to a file and to the console, with the abi
 
 - с помощью стандартного пакета 'log'.
 
+**Запись в файл через каналы.**
 
-**Через канал.**
+Особенностью этого решения является то, что для каждого из файлов создаётся буфферизированный канал на 1000 элементов (строк, которые надо записать в файл).
+Для каждого такого канала, запускается в отдельном потоке горутина-читатель, которая имеет право вызвать функцию записи в файл,
+что гарантирует то, что не возникнет ситуация гонки. Буффер на 1000 элементов теоритически достаточно большой, для того чтобы горутины писатели не вставали в очередь
+на запись в буффер канала.
+
+A feature of this solution is that for each of the files, a buffered channel is created for 1000 elements (lines that must be written to the file).
+For each such channel, a reader goroutine is launched in a separate thread, which has the right to call the function of writing to the file, which guarantees that a race situation does not arise. The 1000-element buffer is theoretically large enough to prevent writers from queuing up to write to the channel buffer.
+
+![alt text](https://github.com/RobertGumpert/gologger/blob/master/examples/channel.png)

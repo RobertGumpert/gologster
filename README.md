@@ -211,8 +211,6 @@ package main
 
 import (
 	gologger "../.."
-	"bufio"
-	"os"
 	"path/filepath"
 	"runtime"
 )
@@ -225,6 +223,10 @@ var (
 		"file_2": projectRoot + "/log2.txt",
 	}
 )
+
+func main() {
+	logs := settings(loggingFiles)
+}
 
 func settings(files map[string]string) *gologger.LogInterface {
 

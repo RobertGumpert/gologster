@@ -20,6 +20,46 @@ The object through which logging is performed is 'UserInterface'. This object ne
 
 In the basic setting, only console output is available. All other settings are set after receiving the basic setting.
 
+```
+// Создаёт логгер в точке входа.
+// Creates a logger at the entry point.
+
+package main
+
+import (
+	gologger "../.."
+	"./mypackage"
+	"time"
+)
+
+// Создаём базового логгера, в котором доступен только вывод в консоль.
+// We create a basic gologger in which only output to the console is available.
+var logs = gologger.Default()
+
+
+[OTHER PACKAGE]:
+
+
+// Передаём объект логгера в другие пакеты.
+// We transfer the logger object to other packages.
+
+package mypackage
+
+import (
+	gologger "../../.."
+	"strconv"
+)
+
+var (
+	logs *gologger.LogInterface
+)
+
+func SetLogs(main *gologger.LogInterface) {
+	logs = main
+}
+
+```
+
 **Базовая настройка | Basic setting :**
 ```go
 

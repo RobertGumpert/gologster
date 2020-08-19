@@ -27,7 +27,7 @@ A feature of this solution is that for each of the files, a buffered channel is 
 For each such channel, a reader goroutine is launched in a separate thread, which has the right to call the function of writing to the file, which guarantees that a race situation does not arise. The 1000-element buffer is theoretically large enough to prevent writers from queuing up to write to the channel buffer.
 
 Горутина-читатель | goroutine-reader
-```
+```golang
 func (logger *loggerFileMultithreading) receiver(file fileAgent) {
 	for outputString := range file.channel {
 		runtime.Gosched()
@@ -46,7 +46,7 @@ After opening the file, it creates a temporary buffer to write to. Next, the fsy
 After writing the content to the buffer, the data is flushed to the file via '(*io.Writer).Flush()'.
 
 Запись в файл | Write to file
-```
+```go
 func (logger *loggerFileMultithreading) output(out *outputString, param ...string) error {
 	var (
 		path      = param[0]

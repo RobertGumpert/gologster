@@ -23,6 +23,19 @@ Simultaneous recording of one message to a file and to the console, with the abi
 что гарантирует то, что не возникнет ситуация гонки. Буффер на 1000 элементов теоритически достаточно большой, для того чтобы горутины писатели не вставали в очередь
 на запись в буффер канала.
 
+Горутины-читатель | goroutine-reader
+```
+func (logger *loggerFileMultithreading) receiver(file fileAgent) {
+	for outputString := range file.channel {
+		runtime.Gosched()
+		err := logger.output(outputString, file.path)
+		if err != nil {
+			logger.errorOutput(outputString, err)
+		}
+	}
+}
+```
+
 A feature of this solution is that for each of the files, a buffered channel is created for 1000 elements (lines that must be written to the file).
 For each such channel, a reader goroutine is launched in a separate thread, which has the right to call the function of writing to the file, which guarantees that a race situation does not arise. The 1000-element buffer is theoretically large enough to prevent writers from queuing up to write to the channel buffer.
 

@@ -24,8 +24,8 @@ func newLoggerConsoleSinglethreading(basic *loggerConsoleBasic) *loggerConsoleSi
 
 // add : implement iLogger interface
 //
-func (logger *loggerConsoleSinglethreading) add(value interface{}, lvl level, date string, param ...string) {
-	out, err := logger.createOutputString(value, lvl, date)
+func (logger *loggerConsoleSinglethreading) add(value interface{}, lvl level, date, fn string, param ...string) {
+	out, err := logger.createOutputString(value, lvl, date, fn)
 	if err != nil {
 		logger.errorOutput(out, err)
 		return
@@ -39,8 +39,8 @@ func (logger *loggerConsoleSinglethreading) add(value interface{}, lvl level, da
 //
 // The behavior is defined by the basic logger 'loggerConsoleBasic'.
 //
-func (logger *loggerConsoleSinglethreading) createOutputString(value interface{}, lvl level, date string, param ...string) (*outputString, error) {
-	return logger.basicConsoleLogger.createOutputString(value, lvl, date)
+func (logger *loggerConsoleSinglethreading) createOutputString(value interface{}, lvl level, date, fn string, param ...string) (*outputString, error) {
+	return logger.basicConsoleLogger.createOutputString(value, lvl, date, fn)
 }
 
 // output : implement iLogger interface

@@ -21,7 +21,7 @@ package logger
 // Mode : в теле содержит вызов метода 'add' конкретного логгера.
 //        in the body contains a call to the 'add' method of a particular logger.
 //
-type Mode func(logger *LogInterface, value interface{}, lvl level, date string)
+type Mode func(logger *LogInterface, value interface{}, lvl level, date, fn string)
 
 // Option : возвращает 'Mode' соответствующий  выбранной пользователем опции.
 //          returns 'Mode' corresponding to the option selected by the user.
@@ -34,8 +34,8 @@ type Option func(param ...string)
 //           Call on the same thread.
 //
 func Console(param ...string) Mode {
-	return func(logger *LogInterface, value interface{}, lvl level, date string) {
-		logger.modeConsole.add(value, lvl, date, param...)
+	return func(logger *LogInterface, value interface{}, lvl level, date, fn string) {
+		logger.modeConsole.add(value, lvl, date, fn, param...)
 	}
 }
 
@@ -45,11 +45,11 @@ func Console(param ...string) Mode {
 //             Call on the same thread.
 //
 func FileMulti(param ...string) Mode {
-	return func(logger *LogInterface, value interface{}, lvl level, date string) {
+	return func(logger *LogInterface, value interface{}, lvl level, date, fn string) {
 		if logger.modeFileMulti == nil {
-			logger.modeConsole.add(value, lvl, date, param...)
+			logger.modeConsole.add(value, lvl, date, fn, param...)
 		}
-		logger.modeFileMulti.add(value, lvl, date, param...)
+		logger.modeFileMulti.add(value, lvl, date, fn, param...)
 	}
 }
 
@@ -59,11 +59,11 @@ func FileMulti(param ...string) Mode {
 //             Call on the same thread.
 //
 func FileMutex(param ...string) Mode {
-	return func(logger *LogInterface, value interface{}, lvl level, date string) {
+	return func(logger *LogInterface, value interface{}, lvl level, date, fn string) {
 		if logger.modeFileMutex == nil {
-			logger.modeConsole.add(value, lvl, date, param...)
+			logger.modeConsole.add(value, lvl, date, fn, param...)
 		}
-		logger.modeFileMutex.add(value, lvl, date, param...)
+		logger.modeFileMutex.add(value, lvl, date, fn, param...)
 	}
 }
 
@@ -73,8 +73,8 @@ func FileMutex(param ...string) Mode {
 //             Call in a separate thread.
 //
 func GoConsole(param ...string) Mode {
-	return func(logger *LogInterface, value interface{}, lvl level, date string) {
-		go logger.modeConsole.add(value, lvl, date, param...)
+	return func(logger *LogInterface, value interface{}, lvl level, date, fn string) {
+		go logger.modeConsole.add(value, lvl, date, fn, param...)
 	}
 }
 
@@ -84,11 +84,11 @@ func GoConsole(param ...string) Mode {
 //               Call in a separate thread.
 //
 func GoFileMulti(param ...string) Mode {
-	return func(logger *LogInterface, value interface{}, lvl level, date string) {
+	return func(logger *LogInterface, value interface{}, lvl level, date, fn string) {
 		if logger.modeFileMulti == nil {
-			go logger.modeConsole.add(value, lvl, date, param...)
+			go logger.modeConsole.add(value, lvl, date, fn, param...)
 		}
-		go logger.modeFileMulti.add(value, lvl, date, param...)
+		go logger.modeFileMulti.add(value, lvl, date, fn, param...)
 	}
 }
 
@@ -98,10 +98,10 @@ func GoFileMulti(param ...string) Mode {
 //               Call in a separate thread.
 //
 func GoFileMutex(param ...string) Mode {
-	return func(logger *LogInterface, value interface{}, lvl level, date string) {
+	return func(logger *LogInterface, value interface{}, lvl level, date, fn string) {
 		if logger.modeFileMutex == nil {
-			go logger.modeConsole.add(value, lvl, date, param...)
+			go logger.modeConsole.add(value, lvl, date, fn, param...)
 		}
-		go logger.modeFileMutex.add(value, lvl, date, param...)
+		go logger.modeFileMutex.add(value, lvl, date, fn, param...)
 	}
 }

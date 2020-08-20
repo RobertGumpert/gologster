@@ -24,7 +24,7 @@ func newBasicConsole(basic *loggerBasic) *loggerConsoleBasic {
 // The behavior is determined independently by the types that
 // embed the given type in themselves.
 //
-func (logger *loggerConsoleBasic) add(value interface{}, lvl level, date string, param ...string) {
+func (logger *loggerConsoleBasic) add(value interface{}, lvl level, date, fn string, param ...string) {
 	return
 }
 
@@ -37,8 +37,8 @@ func (logger *loggerConsoleBasic) add(value interface{}, lvl level, date string,
 // The behavior is defined by the basic logger 'loggerBasic'.
 // Types that embed a given type can define behavior on their own.
 //
-func (logger *loggerConsoleBasic) createOutputString(value interface{}, lvl level, date string, param ...string) (*outputString, error) {
-	return logger.basic.createOutputString(value, lvl, date)
+func (logger *loggerConsoleBasic) createOutputString(value interface{}, lvl level, date, fn string, param ...string) (*outputString, error) {
+	return logger.basic.createOutputString(value, lvl, date, fn)
 }
 
 // output : implement iLogger interface

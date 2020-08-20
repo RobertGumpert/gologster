@@ -41,7 +41,7 @@ func newBasicFile(basic *loggerBasic, filesMap map[string]string) *loggerFileBas
 
 // getParams : проверяет наличие только одного параметра - ключ файла. | checks for only one parameter - the file key.
 //
-func (logger *loggerFileBasic) getParams(value interface{}, lvl level, date string, param []string) (error, string) {
+func (logger *loggerFileBasic) getParams(value interface{}, lvl level, date, fn string, param []string) (error, string) {
 	var (
 		key = ""
 	)
@@ -49,7 +49,7 @@ func (logger *loggerFileBasic) getParams(value interface{}, lvl level, date stri
 		key = param[0]
 	} else {
 		err := errors.New("fileAsync 'key' isn't exist in 'param ...string'")
-		out, e := logger.createOutputString(value, lvl, date)
+		out, e := logger.createOutputString(value, lvl, date, fn)
 		if e != nil {
 			err = errors.New(strings.Join([]string{
 				err.Error(),
@@ -70,7 +70,7 @@ func (logger *loggerFileBasic) getParams(value interface{}, lvl level, date stri
 // The behavior is determined independently by the types that
 // embed the given type in themselves.
 //
-func (logger *loggerFileBasic) add(value interface{}, lvl level, date string, param ...string) {
+func (logger *loggerFileBasic) add(value interface{}, lvl level, date, fn string, param ...string) {
 	return
 }
 
@@ -83,8 +83,8 @@ func (logger *loggerFileBasic) add(value interface{}, lvl level, date string, pa
 // The behavior is defined by the basic logger 'logger Basic'.
 // Types that embed a given type can define behavior on their own.
 //
-func (logger *loggerFileBasic) createOutputString(value interface{}, lvl level, date string, param ...string) (*outputString, error) {
-	return logger.basic.createOutputString(value, lvl, date)
+func (logger *loggerFileBasic) createOutputString(value interface{}, lvl level, date, fn string, param ...string) (*outputString, error) {
+	return logger.basic.createOutputString(value, lvl, date, fn)
 }
 
 // output : implement iLogger interface

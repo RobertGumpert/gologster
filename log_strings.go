@@ -4,12 +4,24 @@ import "strings"
 
 type outputString string
 
-func newOutputString(value []byte, date string, lvl level) *outputString {
+func newOutputString(value []byte, date, fn string, lvl level) *outputString {
 	out := outputString("")
 	out = out.addLevel(lvl)
+	out = out.addFunc(fn)
 	out = out.addValue(value)
 	out = out.addDate(date)
 	return &out
+}
+
+func (out outputString) addFunc(fn string) outputString {
+	if strings.Index(string(out), "level=") == 0 && !strings.Contains(string(out), "func=") {
+		return outputString(strings.Join([]string{
+			string(out),
+			"func=[",
+			fn,
+			"];"}, ""))
+	}
+	return out
 }
 
 func (out outputString) addError(err error) outputString {

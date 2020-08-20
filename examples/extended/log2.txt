@@ -1,3 +1,3 @@
-2020/08/19 21:41:22 level=[INFO];value=["App is Started!"];date=[Wed Aug 19 21:41:22 2020];
-2020/08/19 21:41:46 level=[INFO];value=["Hello world!"];date=[Wed Aug 19 21:41:46 2020];
-2020/08/19 21:42:04 level=[INFO];value=["Goodbye world!"];date=[Wed Aug 19 21:42:04 2020];
+2020/08/20 00:28:03 level=[INFO];value=["App is Started!"];date=[Thu Aug 20 00:28:03 2020];
+2020/08/20 00:28:20 level=[INFO];value=["Hello World!"];date=[Thu Aug 20 00:28:20 2020];
+2020/08/20 00:28:34 level=[INFO];value=["Goodbye world!"];date=[Thu Aug 20 00:28:34 2020];

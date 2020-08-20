@@ -87,12 +87,12 @@ func (logger *loggerFileMultithreading) receiver(file fileAgent) {
 // launched for a specific file, in the body of which there is a loop,
 // iterating over the channel, calling the function to write to the file.
 //
-func (logger *loggerFileMultithreading) add(value interface{}, lvl level, date string, param ...string) {
-	err, key := logger.basicFileLogger.getParams(value, lvl, date, param)
+func (logger *loggerFileMultithreading) add(value interface{}, lvl level, date, fn string, param ...string) {
+	err, key := logger.basicFileLogger.getParams(value, lvl, date, fn, param)
 	if err != nil {
 		return
 	}
-	out, err := logger.createOutputString(value, lvl, date)
+	out, err := logger.createOutputString(value, lvl, date, fn)
 	if err != nil {
 		logger.basicFileLogger.errorOutput(out, err)
 		return
@@ -111,8 +111,8 @@ func (logger *loggerFileMultithreading) add(value interface{}, lvl level, date s
 //
 // Use 'basicFileLogger.createOutputString()'
 //
-func (logger *loggerFileMultithreading) createOutputString(value interface{}, lvl level, date string, param ...string) (*outputString, error) {
-	return logger.basicFileLogger.createOutputString(value, lvl, date)
+func (logger *loggerFileMultithreading) createOutputString(value interface{}, lvl level, date, fn string, param ...string) (*outputString, error) {
+	return logger.basicFileLogger.createOutputString(value, lvl, date, fn)
 }
 
 // output : implement iLogger interface

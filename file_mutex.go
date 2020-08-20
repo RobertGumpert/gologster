@@ -44,12 +44,12 @@ func newLoggerFileMutex(file *loggerFileBasic) *loggerFileMutex {
 
 // add : implement iLogger interface
 //
-func (logger *loggerFileMutex) add(value interface{}, lvl level, date string, param ...string) {
-	err, key := logger.basicFileLogger.getParams(value, lvl, date, param)
+func (logger *loggerFileMutex) add(value interface{}, lvl level, date, fn string, param ...string) {
+	err, key := logger.basicFileLogger.getParams(value, lvl, date, fn, param)
 	if err != nil {
 		return
 	}
-	out, err := logger.createOutputString(value, lvl, date)
+	out, err := logger.createOutputString(value, lvl, date, fn)
 	if err != nil {
 		logger.errorOutput(out, err)
 		return
@@ -71,8 +71,8 @@ func (logger *loggerFileMutex) add(value interface{}, lvl level, date string, pa
 //
 // Use 'basicFileLogger.createOutputString()'
 //
-func (logger *loggerFileMutex) createOutputString(value interface{}, lvl level, date string, param ...string) (*outputString, error) {
-	return logger.basicFileLogger.createOutputString(value, lvl, date)
+func (logger *loggerFileMutex) createOutputString(value interface{}, lvl level, date, fn string, param ...string) (*outputString, error) {
+	return logger.basicFileLogger.createOutputString(value, lvl, date, fn)
 }
 
 // output : implement iLogger interface

@@ -30,7 +30,7 @@ func newBasic() *loggerBasic {
 //
 // Types that embed a given type can define behavior on their own.
 //
-func (logger *loggerBasic) add(value interface{}, lvl level, date string, param ...string) {
+func (logger *loggerBasic) add(value interface{}, lvl level, date, fn string, param ...string) {
 	return
 }
 
@@ -43,7 +43,7 @@ func (logger *loggerBasic) add(value interface{}, lvl level, date string, param 
 // Doesn't use parameters.
 // Types that embed a given type can define behavior on their own.
 //
-func (logger *loggerBasic) createOutputString(value interface{}, lvl level, date string, param ...string) (*outputString, error) {
+func (logger *loggerBasic) createOutputString(value interface{}, lvl level, date, fn string, param ...string) (*outputString, error) {
 	if value == nil {
 		if date == "" {
 			err := strings.Join([]string{
@@ -51,9 +51,9 @@ func (logger *loggerBasic) createOutputString(value interface{}, lvl level, date
 				time.Now().Format("Mon Jan _2 15:04:05 2006"),
 				"'",
 			}, "")
-			return newOutputString([]byte(""), date, lvl), errors.New(err)
+			return newOutputString([]byte(""), date, fn, lvl), errors.New(err)
 		}
-		return newOutputString([]byte(""), date, lvl), errors.New("empty log 'value'")
+		return newOutputString([]byte(""), date, fn, lvl), errors.New("empty log 'value'")
 	}
 	bytes, err := json.Marshal(value)
 	if err != nil {
@@ -62,9 +62,9 @@ func (logger *loggerBasic) createOutputString(value interface{}, lvl level, date
 			err.Error(),
 			"'",
 		}, "")
-		return newOutputString([]byte("empty log 'value'"), date, lvl), errors.New(e)
+		return newOutputString([]byte("empty log 'value'"), date, fn, lvl), errors.New(e)
 	}
-	return newOutputString(bytes, date, lvl), nil
+	return newOutputString(bytes, date, fn, lvl), nil
 }
 
 // output : implement iLogger interface

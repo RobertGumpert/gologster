@@ -1,6 +1,8 @@
 package logger
 
 import (
+	"runtime"
+	"strings"
 	"time"
 )
 
@@ -47,7 +49,7 @@ type iLogger interface {
 	// that implements the 'iLogger' interface. Regulates the order
 	// of log line creation, output and error handling.
 	//
-	add(value interface{}, lvl level, date string, param ...string)
+	add(value interface{}, lvl level, date, fn string, param ...string)
 
 	// createOutputString : метод, ответственный за создание строки лога. | method responsible for creating the log line.
 	//
@@ -79,7 +81,7 @@ type iLogger interface {
 	// if the passed data is not valid or
 	// some error occurred while marshaling.
 	//
-	createOutputString(value interface{}, lvl level, date string, param ...string) (*outputString, error)
+	createOutputString(value interface{}, lvl level, date, fn string, param ...string) (*outputString, error)
 
 	// output : метод, выполняющий вывод лога. | method that performs log output.
 	//
@@ -169,14 +171,14 @@ func (logger *LogInterface) ConfigFile(files map[string]string) *LogInterface {
 func (logger *LogInterface) SetModeFileMulti(files ...map[string]string) *LogInterface {
 	date := time.Now().Format("Mon Jan _2 15:04:05 2006")
 	if len(files) == 0 && logger.fileBasic == nil {
-		logger.modeConsole.add("LogInterface message : from 'SetModeFileMulti()' files map len() = 0", levelError, date)
+		logger.modeConsole.add("LogInterface message : from 'SetModeFileMulti()' files map len() = 0", levelError, date, "")
 		return logger
 	}
 	if logger.fileBasic == nil {
 		logger.fileBasic = newBasicFile(logger.basic, files[0])
 	}
 	logger.modeFileMulti = newLoggerFileMultithreading(logger.fileBasic)
-	logger.modeConsole.add("LogInterface message : from 'SetModeFileMulti()' mode was set", levelInfo, date)
+	logger.modeConsole.add("LogInterface message : from 'SetModeFileMulti()' mode was set", levelInfo, date, "")
 	return logger
 }
 
@@ -186,14 +188,14 @@ func (logger *LogInterface) SetModeFileMulti(files ...map[string]string) *LogInt
 func (logger *LogInterface) SetModeFileMutex(files ...map[string]string) *LogInterface {
 	date := time.Now().Format("Mon Jan _2 15:04:05 2006")
 	if len(files) == 0 && logger.fileBasic == nil {
-		logger.modeConsole.add("LogInterface message : from 'SetModeFileMutex()' files map len() = 0", levelError, date)
+		logger.modeConsole.add("LogInterface message : from 'SetModeFileMutex()' files map len() = 0", levelError, date, "")
 		return logger
 	}
 	if logger.fileBasic == nil {
 		logger.fileBasic = newBasicFile(logger.basic, files[0])
 	}
 	logger.modeFileMutex = newLoggerFileMutex(logger.fileBasic)
-	logger.modeConsole.add("LogInterface message : from 'SetModeFileMutex()' mode was set", levelInfo, date)
+	logger.modeConsole.add("LogInterface message : from 'SetModeFileMutex()' mode was set", levelInfo, date, "")
 	return logger
 }
 
@@ -202,11 +204,12 @@ func (logger *LogInterface) SetModeFileMutex(files ...map[string]string) *LogInt
 //
 func (logger *LogInterface) Info(value interface{}, modes ...Mode) {
 	date := time.Now().Format("Mon Jan _2 15:04:05 2006")
+	fn := logger.getFuncFromRuntime(2)
 	if modes == nil {
-		logger.modeConsole.add(value, levelInfo, date)
+		logger.modeConsole.add(value, levelInfo, date, fn)
 		return
 	}
-	logger.log(value, levelInfo, date, modes...)
+	logger.log(value, levelInfo, date, fn, modes...)
 }
 
 // Error : логирование уровня 'error'.
@@ -214,11 +217,12 @@ func (logger *LogInterface) Info(value interface{}, modes ...Mode) {
 //
 func (logger *LogInterface) Error(value interface{}, modes ...Mode) {
 	date := time.Now().Format("Mon Jan _2 15:04:05 2006")
+	fn := logger.getFuncFromRuntime(2)
 	if modes == nil {
-		logger.modeConsole.add(value, levelError, date)
+		logger.modeConsole.add(value, levelError, date, fn)
 		return
 	}
-	logger.log(value, levelError, date, modes...)
+	logger.log(value, levelError, date, fn, modes...)
 }
 
 // Panic : логирование уровня 'panic'.
@@ -226,15 +230,29 @@ func (logger *LogInterface) Error(value interface{}, modes ...Mode) {
 //
 func (logger *LogInterface) Panic(value interface{}, modes ...Mode) {
 	date := time.Now().Format("Mon Jan _2 15:04:05 2006")
+	fn := logger.getFuncFromRuntime(2)
 	if modes == nil {
-		logger.modeConsole.add(value, levelPanic, date)
+		logger.modeConsole.add(value, levelPanic, date, fn)
 		return
 	}
-	logger.log(value, levelPanic, date, modes...)
+	logger.log(value, levelPanic, date, fn, modes...)
 }
 
-func (logger *LogInterface) log(value interface{}, lvl level, date string, modes ...Mode) {
+func (logger *LogInterface) getFuncFromRuntime(skip int) string {
+	pc, _, _, ok := runtime.Caller(skip)
+	if !ok {
+		return "undefined func"
+	}
+	fn := runtime.FuncForPC(pc).Name()
+	if strings.Contains(fn, "/") {
+		split := strings.Split(fn, "/")
+		fn = split[len(split)-1]
+	}
+	return fn
+}
+
+func (logger *LogInterface) log(value interface{}, lvl level, date, fn string, modes ...Mode) {
 	for _, mode := range modes {
-		mode(logger, value, lvl, date)
+		mode(logger, value, lvl, date, fn)
 	}
 }

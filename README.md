@@ -90,8 +90,8 @@ func main() {
 }
 
 [OUTPUT]:
-2020/08/19 23:31:59 level=[INFO];value=["App is started!"];date=[Wed Aug 19 23:31:59 2020];
-2020/08/19 23:31:59 level=[INFO];value=["App has terminated!"];date=[Wed Aug 19 23:31:59 2020];
+2020/08/20 10:46:47 level=[INFO];func=[main.main];value=["App is started!"];date=[Thu Aug 20 10:46:47 2020];
+2020/08/20 10:46:52 level=[INFO];func=[main.main];value=["App has terminated!"];date=[Thu Aug 20 10:46:52 2020];
 
 ```
 
@@ -183,18 +183,18 @@ func PrintNumbers(num int) {
 }
 
 [OUTPUT]:
-2020/08/19 23:31:59 level=[INFO];value=["App is started!"];date=[Wed Aug 19 23:31:59 2020];
-2020/08/19 23:31:59 level=[INFO];value=["Print all numbers : 10"];date=[Wed Aug 19 23:31:59 2020];
-2020/08/19 23:31:59 level=[INFO];value=[{"Value":4,"Prev":{"Value":3,"Prev":{"Value":2,"Prev":{"Value":1,"Prev":{"Value":0,"Prev":{"Value":0,"Prev":null}}}}}}];date=[Wed Aug 19 23:31:59 2020];
-2020/08/19 23:31:59 level=[INFO];value=[{"Value":3,"Prev":{"Value":2,"Prev":{"Value":1,"Prev":{"Value":0,"Prev":{"Value":0,"Prev":null}}}}}];date=[Wed Aug 19 23:31:59 2020];
-2020/08/19 23:31:59 level=[INFO];value=[{"Value":0,"Prev":{"Value":0,"Prev":null}}];date=[Wed Aug 19 23:31:59 2020];
-2020/08/19 23:31:59 level=[INFO];value=[{"Value":6,"Prev":{"Value":5,"Prev":{"Value":4,"Prev":{"Value":3,"Prev":{"Value":2,"Prev":{"Value":1,"Prev":{"Value":0,"Prev":{"Value":0,"Prev":null}}}}}}}}];date=[Wed Aug 19 23:31:59 2020];
-2020/08/19 23:31:59 level=[INFO];value=[{"Value":9,"Prev":{"Value":8,"Prev":{"Value":7,"Prev":{"Value":6,"Prev":{"Value":5,"Prev":{"Value":4,"Prev":{"Value":3,"Prev":{"Value":2,"Prev":{"Value":1,"Prev":{"Value":0,"Prev":{"Value":0,"Prev":null}}}}}}}}}}}];date=[Wed Aug 19 23:31:59 2020];
-2020/08/19 23:31:59 level=[INFO];value=[{"Value":2,"Prev":{"Value":1,"Prev":{"Value":0,"Prev":{"Value":0,"Prev":null}}}}];date=[Wed Aug 19 23:31:59 2020];
-2020/08/19 23:31:59 level=[INFO];value=[{"Value":1,"Prev":{"Value":0,"Prev":{"Value":0,"Prev":null}}}];date=[Wed Aug 19 23:31:59 2020];
-2020/08/19 23:31:59 level=[INFO];value=[{"Value":8,"Prev":{"Value":7,"Prev":{"Value":6,"Prev":{"Value":5,"Prev":{"Value":4,"Prev":{"Value":3,"Prev":{"Value":2,"Prev":{"Value":1,"Prev":{"Value":0,"Prev":{"Value":0,"Prev":null}}}}}}}}}}];date=[Wed Aug 19 23:31:59 2020];
-2020/08/19 23:31:59 level=[INFO];value=[{"Value":7,"Prev":{"Value":6,"Prev":{"Value":5,"Prev":{"Value":4,"Prev":{"Value":3,"Prev":{"Value":2,"Prev":{"Value":1,"Prev":{"Value":0,"Prev":{"Value":0,"Prev":null}}}}}}}}}];date=[Wed Aug 19 23:31:59 2020];
-2020/08/19 23:31:59 level=[INFO];value=[{"Value":5,"Prev":{"Value":4,"Prev":{"Value":3,"Prev":{"Value":2,"Prev":{"Value":1,"Prev":{"Value":0,"Prev"{"Value":0,"Prev":null}}}}}}}];date=[Wed Aug 19 23:31:59 2020];
+2020/08/20 10:46:47 level=[INFO];func=[main.main];value=["App is started!"];date=[Thu Aug 20 10:46:47 2020];
+2020/08/20 10:46:47 level=[INFO];func=[mypackage.PrintNumbers];value=["Print all numbers : 10"];date=[Thu Aug 20 10:46:47 2020];
+2020/08/20 10:46:47 level=[INFO];func=[mypackage.PrintNumbers];value=[{"Value":0,"Prev":{"Value":0,"Prev":null}}];date=[Thu Aug 20 10:46:47 2020];
+2020/08/20 10:46:47 level=[INFO];func=[mypackage.PrintNumbers];value=[{"Value":2,"Prev":{"Value":1,"Prev":{"Value":0,"Prev":{"Value":0,"Prev":null}}}}];date=[Thu Aug 20 10:46:47 2020];
+2020/08/20 10:46:47 level=[INFO];func=[mypackage.PrintNumbers];value=[{"Value":1,"Prev":{"Value":0,"Prev":{"Value":0,"Prev":null}}}];date=[Thu Aug 20 10:46:47 2020];
+2020/08/20 10:46:47 level=[INFO];func=[mypackage.PrintNumbers];value=[{"Value":3,"Prev":{"Value":2,"Prev":{"Value":1,"Prev":{"Value":0,"Prev":{"Value":0,"Prev":null}}}}}];date=[Thu Aug 20 10:46:47 2020];
+2020/08/20 10:46:47 level=[INFO];func=[mypackage.PrintNumbers];value=[{"Value":6,"Prev":{"Value":5,"Prev":{"Value":4,"Prev":{"Value":3,"Prev":{"Value":2,"Prev":{"Value":1,"Prev":{"Value":0,"Prev":{"Value":0,"Prev":null}}}}}}}}];date=[Thu Aug 20 10:46:47 2020];
+2020/08/20 10:46:47 level=[INFO];func=[mypackage.PrintNumbers];value=[{"Value":8,"Prev":{"Value":7,"Prev":{"Value":6,"Prev":{"Value":5,"Prev":{"Value":4,"Prev":{"Value":3,"Prev":{"Value":2,"Prev":{"Value":1,"Prev":{"Value":0,"Prev":{"Value":0,"Prev":null}}}}}}}}}}];date=[Thu Aug 20 10:46:47 2020];
+2020/08/20 10:46:47 level=[INFO];func=[mypackage.PrintNumbers];value=[{"Value":7,"Prev":{"Value":6,"Prev":{"Value":5,"Prev":{"Value":4,"Prev":{"Value":3,"Prev":{"Value":2,"Prev":{"Value":1,"Prev":{"Value":0,"Prev":{"Value":0,"Prev":null}}}}}}}}}];date=[Thu Aug 20 10:46:47 2020];
+2020/08/20 10:46:47 level=[INFO];func=[mypackage.PrintNumbers];value=[{"Value":4,"Prev":{"Value":3,"Prev":{"Value":2,"Prev":{"Value":1,"Prev":{"Value":0,"Prev":{"Value":0,"Prev":null}}}}}}];date=[Thu Aug 20 10:46:47 2020];
+2020/08/20 10:46:47 level=[INFO];func=[mypackage.PrintNumbers];value=[{"Value":9,"Prev":{"Value":8,"Prev":{"Value":7,"Prev":{"Value":6,"Prev":{"Value":5,"Prev":{"Value":4,"Prev":{"Value":3,"Prev":{"Value":2,"Prev":{"Value":1,"Prev":{"Value":0,"Prev":{"Value":0,"Prev":null}}}}}}}}}}}];date=[Thu Aug 20 10:46:47 2020];
+2020/08/20 10:46:47 level=[INFO];func=[mypackage.PrintNumbers];value=[{"Value":5,"Prev":{"Value":4,"Prev":{"Value":3,"Prev":{"Value":2,"Prev":{"Value":1,"Prev":{"Value":0,"Prev":{"Value":0,"Prev":null}}}}}}}];date=[Thu Aug 20 10:46:47 2020];
 
 ```
 ## Настройка для работы с файлами. | Setting for working with files.
@@ -280,25 +280,25 @@ func main() {
 }
 
 [OUTPUT]:
-2020/08/20 00:28:03 level=[INFO];value=["LogInterface message : from 'SetModeFileMulti()' mode was set"];date=[Thu Aug 20 00:28:03 2020];
-2020/08/20 00:28:03 level=[INFO];value=["LogInterface message : from 'SetModeFileMutex()' mode was set"];date=[Thu Aug 20 00:28:03 2020];
-2020/08/20 00:28:03 level=[INFO];value=["Logger wes set!"];date=[Thu Aug 20 00:28:03 2020];
-2020/08/20 00:28:03 level=[INFO];value=["App is Started!"];date=[Thu Aug 20 00:28:03 2020];
-Hello World!
-2020/08/20 00:28:20 level=[INFO];value=["Hello World!"];date=[Thu Aug 20 00:28:20 2020];
+2020/08/20 12:25:24 level=[INFO];func=[];value=["LogInterface message : from 'SetModeFileMulti()' mode was set"];date=[Thu Aug 20 12:25:24 2020];
+2020/08/20 12:25:24 level=[INFO];func=[];value=["LogInterface message : from 'SetModeFileMutex()' mode was set"];date=[Thu Aug 20 12:25:24 2020];
+2020/08/20 12:25:24 level=[INFO];func=[main.main];value=["Logger wes set!"];date=[Thu Aug 20 12:25:24 2020];
+2020/08/20 12:25:24 level=[INFO];func=[main.main];value=["App is Started!"];date=[Thu Aug 20 12:25:24 2020];
 
-2020/08/20 00:28:22 level=[ERROR];value=["Message is empty"];date=[Thu Aug 20 00:28:22 2020];
+2020/08/20 12:25:33 level=[ERROR];func=[main.main];value=["Message is empty"];date=[Thu Aug 20 12:25:33 2020];
+Hello world!
+2020/08/20 12:25:42 level=[INFO];func=[main.main];value=["Hello world!"];date=[Thu Aug 20 12:25:42 2020];
 Goodbye world!
-2020/08/20 00:28:34 level=[INFO];value=["Godbye world!"];date=[Thu Aug 20 00:28:34 2020];
+2020/08/20 12:25:51 level=[INFO];func=[main.main];value=["Goodbye world!"];date=[Thu Aug 20 12:25:51 2020];
 
 [file_1]:
-level=[INFO];value=["App is Started!"];date=[Thu Aug 20 00:28:03 2020];
-level=[ERROR];value=["Message is empty"];date=[Thu Aug 20 00:28:22 2020];
+level=[INFO];func=[main.main];value=["App is Started!"];date=[Thu Aug 20 12:25:24 2020];
+level=[ERROR];func=[main.main];value=["Message is empty"];date=[Thu Aug 20 12:25:33 2020];
 
 [file_2]:
-2020/08/20 00:28:03 level=[INFO];value=["App is Started!"];date=[Thu Aug 20 00:28:03 2020];
-2020/08/20 00:28:20 level=[INFO];value=["Hello World!"];date=[Thu Aug 20 00:28:20 2020];
-2020/08/20 00:28:34 level=[INFO];value=["Goodbye world!"];date=[Thu Aug 20 00:28:34 2020];
+2020/08/20 12:25:24 level=[INFO];func=[main.main];value=["App is Started!"];date=[Thu Aug 20 12:25:24 2020];
+2020/08/20 12:25:42 level=[INFO];func=[main.main];value=["Hello world!"];date=[Thu Aug 20 12:25:42 2020];
+2020/08/20 12:25:51 level=[INFO];func=[main.main];value=["Goodbye world!"];date=[Thu Aug 20 12:25:51 2020];
 ```
 
 # Особенности | Features.

@@ -146,7 +146,7 @@ func (logger *loggerFileMultithreading) output(out *outputString, param ...strin
 	)
 	file, err := os.OpenFile(path, os.O_APPEND, 0666)
 	if err != nil {
-		return err
+		return closeFile(file, err)
 	}
 	buffer := bufio.NewWriter(file)
 	err = file.Sync()

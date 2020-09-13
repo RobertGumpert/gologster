@@ -1,0 +1,1 @@
+level=[INFO];func=[name: Log, line: 16, package:/usecase/user];value=["Hello from usecase"];date=[Sun Sep 13 17:14:33 2020];

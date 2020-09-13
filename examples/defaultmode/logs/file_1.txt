@@ -1,0 +1,2 @@
+level=[INFO];func=[name: main, line: 21, package:main];value=["App is started!"];date=[Sun Sep 13 17:16:15 2020];
+level=[INFO];func=[name: main, line: 24, package:main];value=["App has terminated!"];date=[Sun Sep 13 17:16:15 2020];

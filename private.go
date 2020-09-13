@@ -1,9 +1,15 @@
 package logger
 
 import (
+	"bytes"
 	"runtime"
+	"strconv"
 	"strings"
-	"time"
+	"text/template"
+)
+
+const (
+	BaseLogTemplate string = "level=[{{.Level}}];func=[name: {{.Func}}, line: {{.Line}}, package:{{.Package}}];value=[{{.Value}}];date=[{{.Date}}];"
 )
 
 // level : уровень логирования | logging level
@@ -47,11 +53,11 @@ type iLogger interface {
 	//
 	// Through this method it is necessary to contact the logger
 	// that implements the 'iLogger' interface. Regulates the order
-	// of log line creation, output and error handling.
+	// of callingMode line creation, output and error handling.
 	//
-	add(value interface{}, lvl level, date, fn string, param ...string)
+	add(data *logData, param ...string)
 
-	// createOutputString : метод, ответственный за создание строки лога. | method responsible for creating the log line.
+	// createOutputString : метод, ответственный за создание строки лога. | method responsible for creating the callingMode line.
 	//
 	// * value - логируеммые дынные.
 	//           logging data.
@@ -77,13 +83,13 @@ type iLogger interface {
 	// если переданные данные не валидны или при их маршалинге
 	// произошла какая-то ошибка.
 	//
-	// Creates a log line and returns an error
+	// Creates a callingMode line and returns an error
 	// if the passed data is not valid or
 	// some error occurred while marshaling.
 	//
-	createOutputString(value interface{}, lvl level, date, fn string, param ...string) (*outputString, error)
+	createOutputString(data *logData, param ...string) (*string, error)
 
-	// output : метод, выполняющий вывод лога. | method that performs log output.
+	// output : метод, выполняющий вывод лога. | method that performs callingMode output.
 	//
 	// * outputString - строка лога.
 	//          		logging line.
@@ -103,11 +109,11 @@ type iLogger interface {
 	// данный интерфейс работает с файлами. Возвращает ошибку в случае,
 	// если в момент вывода произошла ошибка.
 	//
-	// Performs log output, for example, to a file,
+	// Performs callingMode output, for example, to a file,
 	// if a logger implementing this interface works with files.
 	// Returns an error if an error occurred at the time of output.
 	//
-	output(outputString *outputString, param ...string) error
+	output(out *string, param ...string) error
 
 	// errorOutput : метод, выполняющий принудительный вывод в другой накопитель,
 	//               (например: вывод производился в файл, но в случае ошибки вывода в файл,
@@ -124,135 +130,115 @@ type iLogger interface {
 	// * err - ошибка вывода в основной накопитель.
 	//         error output to the main drive.
 	//
-	errorOutput(outputString *outputString, err error)
+	errorOutput(out *string, err error)
 }
 
-// LogInterface : основной объект. Является пользовательским интерфейсом.
-//                 Хранит все объекты реализующие интерфейс 'iLogger'.
-//                 Создаётся один раз, на все приложение.
-//
-//                 main object. Is the user interface. Stores all objects
-//                 that implement the 'iLogger' interface.
-//                 Created once, for the entire application.
-//
-type LogInterface struct {
-	basic         *loggerBasic
-	fileBasic     *loggerFileBasic
-	consoleBasic  *loggerConsoleBasic
-	modeConsole   *loggerConsoleSinglethreading
-	modeFileMulti *loggerFileMultithreading
-	modeFileMutex *loggerFileMutex
+type logData struct {
+	UserDataOriginal                        interface{}
+	Lvl                                     level
+	IsOption                                bool
+	Error                                   error
+	Value, Level, Package, Date, Func, Line string
 }
 
-// Default : создаёт базовый пользовательский интерфейс, с выводом в консоль.
-//           create a basic user interface, with output to the console.
-//
-func Default() *LogInterface {
-	logger := new(LogInterface)
-	logger.basic = newBasic()
-	logger.consoleBasic = newBasicConsole(logger.basic)
-	logger.modeConsole = newLoggerConsoleSinglethreading(logger.consoleBasic)
-	return logger
+func newLogData(value interface{}, lvl level, date string) *logData {
+	log := new(logData)
+	log.UserDataOriginal = value
+	log.Date = date
+	log.Lvl = lvl
+	log.Level = toStringLevel(lvl)
+	return log
 }
 
-// ConfigFile : настраивает пользовательский интерфейс, для дальнейшей установки модов вывода в файл.
-//              configures the user interface to further install output mods to a file.
-//
-func (logger *LogInterface) ConfigFile(files map[string]string) *LogInterface {
-	if logger.fileBasic == nil {
-		logger.fileBasic = newBasicFile(logger.basic, files)
+func (log *logData) marshal(base *loggerBase) error {
+	out, err := base.createOutputString(log)
+	if err != nil {
+		log.Value = "marshal error"
+		return err
 	}
-	return logger
+	log.Value = *out
+	return err
 }
 
-// SetModeFileMulti : настраивает и добавляет в пользовательский интерфейс мод 'loggerFileMultithreading'.
-//                    configures and adds the 'loggerFileMultithreading' mode to the user interface.
-//
-func (logger *LogInterface) SetModeFileMulti(files ...map[string]string) *LogInterface {
-	date := time.Now().Format("Mon Jan _2 15:04:05 2006")
-	if len(files) == 0 && logger.fileBasic == nil {
-		logger.modeConsole.add("LogInterface message : from 'SetModeFileMulti()' files map len() = 0", levelError, date, "")
-		return logger
-	}
-	if logger.fileBasic == nil {
-		logger.fileBasic = newBasicFile(logger.basic, files[0])
-	}
-	logger.modeFileMulti = newLoggerFileMultithreading(logger.fileBasic)
-	logger.modeConsole.add("LogInterface message : from 'SetModeFileMulti()' mode was set", levelInfo, date, "")
-	return logger
+func (log *logData) setRuntimeInfo(skip int) *logData {
+	function, pckg, line := getRuntimeInfo(skip)
+	log.Func = function
+	log.Package = pckg
+	log.Line = line
+	return log
 }
 
-// SetModeFileMutex : настраивает и добавляет в пользовательский интерфейс мод 'loggerFileMutex'.
-//                    configures and adds the 'loggerFileMutex' mode to the user interface.
-//
-func (logger *LogInterface) SetModeFileMutex(files ...map[string]string) *LogInterface {
-	date := time.Now().Format("Mon Jan _2 15:04:05 2006")
-	if len(files) == 0 && logger.fileBasic == nil {
-		logger.modeConsole.add("LogInterface message : from 'SetModeFileMutex()' files map len() = 0", levelError, date, "")
-		return logger
+func (log *logData) filledTemplate(tmpl *template.Template) *string {
+	var (
+		out    = ""
+		buffer = new(bytes.Buffer)
+	)
+	err := tmpl.Execute(buffer, log)
+	if err != nil {
+		baseTemplate := getTextTemplate("base", BaseLogTemplate, BaseLogTemplate)
+		_ = baseTemplate.Execute(buffer, log)
 	}
-	if logger.fileBasic == nil {
-		logger.fileBasic = newBasicFile(logger.basic, files[0])
-	}
-	logger.modeFileMutex = newLoggerFileMutex(logger.fileBasic)
-	logger.modeConsole.add("LogInterface message : from 'SetModeFileMutex()' mode was set", levelInfo, date, "")
-	return logger
+	out = buffer.String()
+	return &out
 }
 
-// Info : логирование уровня 'info'.
-//        logging level 'info'.
-//
-func (logger *LogInterface) Info(value interface{}, modes ...Mode) {
-	date := time.Now().Format("Mon Jan _2 15:04:05 2006")
-	fn := logger.getFuncFromRuntime(2)
-	if modes == nil {
-		logger.modeConsole.add(value, levelInfo, date, fn)
-		return
+func getTextTemplate(name, str, alternative string) *template.Template {
+	var (
+		textTemplate *template.Template
+	)
+	if str == "" {
+		textTemplate, _ = template.New(name).Parse(alternative)
+	} else {
+		t, err := template.New(name).Parse(str)
+		if err != nil {
+			textTemplate, _ = template.New("console").Parse(alternative)
+		}
+		textTemplate = t
 	}
-	logger.log(value, levelInfo, date, fn, modes...)
+	return textTemplate
 }
 
-// Error : логирование уровня 'error'.
-//         logging level 'error'.
-//
-func (logger *LogInterface) Error(value interface{}, modes ...Mode) {
-	date := time.Now().Format("Mon Jan _2 15:04:05 2006")
-	fn := logger.getFuncFromRuntime(2)
-	if modes == nil {
-		logger.modeConsole.add(value, levelError, date, fn)
-		return
+func toStringLevel(lvl level) string {
+	switch lvl {
+	case levelInfo:
+		return "INFO"
+	case levelError:
+		return "ERROR"
+	case levelPanic:
+		return "PANIC"
+	default:
+		return "NON"
 	}
-	logger.log(value, levelError, date, fn, modes...)
 }
 
-// Panic : логирование уровня 'panic'.
-//         logging level 'panic'.
-//
-func (logger *LogInterface) Panic(value interface{}, modes ...Mode) {
-	date := time.Now().Format("Mon Jan _2 15:04:05 2006")
-	fn := logger.getFuncFromRuntime(2)
-	if modes == nil {
-		logger.modeConsole.add(value, levelPanic, date, fn)
-		return
-	}
-	logger.log(value, levelPanic, date, fn, modes...)
-}
-
-func (logger *LogInterface) getFuncFromRuntime(skip int) string {
-	pc, _, _, ok := runtime.Caller(skip)
+func getRuntimeInfo(skip int) (string, string, string) {
+	var (
+		function = "undefined func"
+		line     = "-1"
+		pckg     = "undefined package"
+	)
+	pc, _, lineInt, ok := runtime.Caller(skip)
 	if !ok {
-		return "undefined func"
+		return function, pckg, line
 	}
-	fn := runtime.FuncForPC(pc).Name()
-	if strings.Contains(fn, "/") {
-		split := strings.Split(fn, "/")
-		fn = split[len(split)-1]
+	function = runtime.FuncForPC(pc).Name()
+	if strings.Contains(function, "/") {
+		//
+		split := strings.Split(function, "/")
+		function = split[len(split)-1]
+		//
+		functionSplit := strings.Split(function, ".")
+		function = functionSplit[len(functionSplit)-1]
+		//
+		split = split[0:len(split)-1]
+		split = append(split, functionSplit[0])
+		pckg = strings.Join(split, "/")
+	} else {
+		if strings.Contains(function, ".") {
+			functionSplit := strings.Split(function, ".")
+			function = functionSplit[len(functionSplit)-1]
+			pckg = functionSplit[0]
+		}
 	}
-	return fn
-}
-
-func (logger *LogInterface) log(value interface{}, lvl level, date, fn string, modes ...Mode) {
-	for _, mode := range modes {
-		mode(logger, value, lvl, date, fn)
-	}
+	return function, pckg, strconv.Itoa(lineInt)
 }

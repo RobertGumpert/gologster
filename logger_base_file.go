@@ -4,52 +4,55 @@ import (
 	"errors"
 	"os"
 	"strings"
+	"text/template"
 )
 
 // fileAgent : определяет параметры, каналы и так далее,
 // 			   которые могут быть необходимы типами,
-// 			   которые встраивают в себя данный тип (loggerFileBasic), при работе с файлом.
+// 			   которые встраивают в себя данный тип (loggerBaseFile), при работе с файлом.
 //
 //			   defines parameters, channels and so on,
 //			   which may be required by types that
-//			   embed this type (loggerFileBasic) when working with a file.
+//			   embed this type (loggerBaseFile) when working with a file.
 //
 type fileAgent struct {
 	path    string
-	channel chan *outputString
+	channel chan *string
 }
 
-// loggerFileBasic : определяет базовое поведение логгера в файл| defines the basic behavior of the logger to the file
+// loggerBaseFile : определяет базовое поведение логгера в файл| defines the base behavior of the logger to the file
 //
-type loggerFileBasic struct {
+type loggerBaseFile struct {
 	// Объект базового логгера, со стандартным поведением.
 	// Basic logger object, with standard behavior.
-	basic *loggerBasic
+	base *loggerBase
 
 	// key -> value : "sql" -> "~/home/dir/log_sql.txt"
-	filesMap map[string]string
+	config map[string]string
+	tmpl   *template.Template
 }
 
-// newBasicFile : constructor
+// newBaseFile : constructor
 //
-func newBasicFile(basic *loggerBasic, filesMap map[string]string) *loggerFileBasic {
-	logger := new(loggerFileBasic)
-	logger.basic = basic
-	logger.filesMap = filesMap
+func newBaseFile(base *loggerBase, config map[string]string, tmpl *template.Template) *loggerBaseFile {
+	logger := new(loggerBaseFile)
+	logger.base = base
+	logger.config = config
+	logger.tmpl = tmpl
 	return logger
 }
 
 // getParams : проверяет наличие только одного параметра - ключ файла. | checks for only one parameter - the file key.
 //
-func (logger *loggerFileBasic) getParams(value interface{}, lvl level, date, fn string, param []string) (error, string) {
+func (logger *loggerBaseFile) getParams(log *logData, param ...string) (error, string) {
 	var (
 		key = ""
 	)
 	if len(param) >= 1 {
 		key = param[0]
 	} else {
-		err := errors.New("fileAsync 'key' isn't exist in 'param ...string'")
-		out, e := logger.createOutputString(value, lvl, date, fn)
+		err := errors.New("loggerBaseFile.getParams 'key' isn't exist in 'param ...string'")
+		out, e := logger.createOutputString(log, param...)
 		if e != nil {
 			err = errors.New(strings.Join([]string{
 				err.Error(),
@@ -70,21 +73,22 @@ func (logger *loggerFileBasic) getParams(value interface{}, lvl level, date, fn 
 // The behavior is determined independently by the types that
 // embed the given type in themselves.
 //
-func (logger *loggerFileBasic) add(value interface{}, lvl level, date, fn string, param ...string) {
+func (logger *loggerBaseFile) add(log *logData, param ...string) {
 	return
 }
 
 // createOutputString : implement iLogger interface
 //
-// Поведение определенно базовым логгером  'loggerBasic'.
+// Поведение определенно базовым логгером  'loggerBase'.
 // Типы, которые встраивают в себя данный тип, могут самостоятельно
 // определять поведение.
 //
-// The behavior is defined by the basic logger 'logger Basic'.
+// The behavior is defined by the base logger 'logger Basic'.
 // Types that embed a given type can define behavior on their own.
 //
-func (logger *loggerFileBasic) createOutputString(value interface{}, lvl level, date, fn string, param ...string) (*outputString, error) {
-	return logger.basic.createOutputString(value, lvl, date, fn)
+func (logger *loggerBaseFile) createOutputString(log *logData, param ...string) (*string, error) {
+	out := log.filledTemplate(logger.tmpl)
+	return out, nil
 }
 
 // output : implement iLogger interface
@@ -100,7 +104,7 @@ func (logger *loggerFileBasic) createOutputString(value interface{}, lvl level, 
 // Recording is performed without a buffer.
 // Types that embed a given type can define behavior on their own.
 //
-func (logger *loggerFileBasic) output(out *outputString, param ...string) error {
+func (logger *loggerBaseFile) output(out *string, param ...string) error {
 	var (
 		path      = param[0]
 		closeFile = func(file *os.File, err error) error {
@@ -127,13 +131,13 @@ func (logger *loggerFileBasic) output(out *outputString, param ...string) error 
 
 // createOutputString : implement iLogger interface
 //
-// Поведение определенно базовым логгером  'loggerBasic'.
+// Поведение определенно базовым логгером  'loggerBase'.
 // Типы, которые встраивают в себя данный тип, могут самостоятельно
 // определять поведение.
 //
-// The behavior is defined by the basic logger 'loggerBasic'.
+// The behavior is defined by the base logger 'loggerBase'.
 // Types that embed a given type can define behavior on their own.
 //
-func (logger *loggerFileBasic) errorOutput(out *outputString, err error) {
-	logger.basic.errorOutput(out, err)
+func (logger *loggerBaseFile) errorOutput(out *string, err error) {
+	logger.base.errorOutput(out, err)
 }

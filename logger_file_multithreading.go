@@ -31,25 +31,32 @@ import (
 // exit and do not take up space in the 'sendq' queue, thereby without taking up memory space.
 //
 type loggerFileMultithreading struct {
-	basicFileLogger *loggerFileBasic
-	filesMap        map[string]fileAgent
+	baseFile *loggerBaseFile
+	config   map[string]fileAgent
 }
 
 // newLoggerFileMultithreading : constructor
 //
-func newLoggerFileMultithreading(file *loggerFileBasic) *loggerFileMultithreading {
+func newLoggerFileMultithreading(baseFile *loggerBaseFile) *loggerFileMultithreading {
 	logger := new(loggerFileMultithreading)
-	logger.filesMap = make(map[string]fileAgent, 0)
-	logger.basicFileLogger = file
-	for key, path := range file.filesMap {
-		file := fileAgent{
-			path:    path,
-			channel: make(chan *outputString, 1000),
-		}
-		logger.filesMap[key] = file
-		go logger.receiver(file)
+	logger.config = make(map[string]fileAgent, 0)
+	logger.baseFile = baseFile
+	for key, path := range baseFile.config {
+		logger.newFile(key, path)
 	}
 	return logger
+}
+
+func (logger *loggerFileMultithreading) newFile(key, path string) {
+	if _, exist := logger.config[key]; !exist {
+		logger.baseFile.config[key] = path
+	}
+	file := fileAgent{
+		path:    path,
+		channel: make(chan *string, 1000),
+	}
+	logger.config[key] = file
+	go logger.receiver(file)
 }
 
 // receiver : итерируется по каналу, созданному для конкретного файла.
@@ -77,7 +84,7 @@ func (logger *loggerFileMultithreading) receiver(file fileAgent) {
 // запущенная для конкретного файла, в теле которой находится цикл,
 // итерирующийся по каналу, вызвая функцию записи в файл.
 //
-// After creating a log line, it is written to a channel
+// After creating a callingMode line, it is written to a channel
 // created for a specific file.
 // Next, the goroutine that wrote this line exits
 // (since the channels are buffered and their buffer is 1000 elements,
@@ -87,32 +94,48 @@ func (logger *loggerFileMultithreading) receiver(file fileAgent) {
 // launched for a specific file, in the body of which there is a loop,
 // iterating over the channel, calling the function to write to the file.
 //
-func (logger *loggerFileMultithreading) add(value interface{}, lvl level, date, fn string, param ...string) {
-	err, key := logger.basicFileLogger.getParams(value, lvl, date, fn, param)
-	if err != nil {
-		return
-	}
-	out, err := logger.createOutputString(value, lvl, date, fn)
-	if err != nil {
-		logger.basicFileLogger.errorOutput(out, err)
-		return
-	}
-	if file, exist := logger.filesMap[key]; exist {
-		file.channel <- out
-		return
+func (logger *loggerFileMultithreading) add(log *logData, param ...string) {
+	var (
+		performOutput = func(log *logData, logger *loggerFileMultithreading, key string) {
+			out, err := logger.createOutputString(log)
+			if err != nil {
+				logger.baseFile.errorOutput(out, err)
+				return
+			}
+			if file, exist := logger.config[key]; exist {
+				file.channel <- out
+				return
+			} else {
+				logger.errorOutput(out, errors.New("loggerFileMultithreading.add isn't exist by key : '"+key+"'"))
+			}
+		}
+		fileKey = ""
+	)
+	if log.IsOption {
+		err, key := logger.baseFile.getParams(log, param...)
+		if err != nil {
+			return
+		}
+		fileKey = key
 	} else {
-		logger.errorOutput(out, errors.New("fileAsync isn't exist by key : '"+key+"'"))
+		for pckg := range logger.baseFile.config {
+			if strings.Contains(log.Package, pckg) {
+				fileKey = pckg
+				break
+			}
+		}
 	}
+	performOutput(log, logger, fileKey)
 }
 
 // errorOutput : implement iLogger interface
 //
-// Исрользуется / используйте 'basicFileLogger.createOutputString()'
+// Исрользуется / используйте 'baseFile.createOutputString()'
 //
-// Use 'basicFileLogger.createOutputString()'
+// Use 'baseFile.createOutputString()'
 //
-func (logger *loggerFileMultithreading) createOutputString(value interface{}, lvl level, date, fn string, param ...string) (*outputString, error) {
-	return logger.basicFileLogger.createOutputString(value, lvl, date, fn)
+func (logger *loggerFileMultithreading) createOutputString(log *logData, param ...string) (*string, error) {
+	return logger.baseFile.createOutputString(log, param...)
 }
 
 // output : implement iLogger interface
@@ -130,7 +153,7 @@ func (logger *loggerFileMultithreading) createOutputString(value interface{}, lv
 // After writing the content to the buffer,
 // the data is flushed to the file via '(*io.Writer).Flush()'.
 //
-func (logger *loggerFileMultithreading) output(out *outputString, param ...string) error {
+func (logger *loggerFileMultithreading) output(out *string, param ...string) error {
 	var (
 		path      = param[0]
 		closeFile = func(file *os.File, err error) error {
@@ -166,10 +189,10 @@ func (logger *loggerFileMultithreading) output(out *outputString, param ...strin
 
 // errorOutput : implement iLogger interface
 //
-// Исрользуется / используйте 'basicFileLogger.errorOutput()'
+// Исрользуется / используйте 'baseFile.errorOutput()'
 //
-// Use 'basicFileLogger.errorOutput()'
+// Use 'baseFile.errorOutput()'
 //
-func (logger *loggerFileMultithreading) errorOutput(out *outputString, err error) {
-	logger.basicFileLogger.errorOutput(out, err)
+func (logger *loggerFileMultithreading) errorOutput(out *string, err error) {
+	logger.baseFile.errorOutput(out, err)
 }

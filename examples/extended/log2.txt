@@ -1,3 +1,0 @@
-2020/08/20 12:25:24 level=[INFO];func=[main.main];value=["App is Started!"];date=[Thu Aug 20 12:25:24 2020];
-2020/08/20 12:25:42 level=[INFO];func=[main.main];value=["Hello world!"];date=[Thu Aug 20 12:25:42 2020];
-2020/08/20 12:25:51 level=[INFO];func=[main.main];value=["Goodbye world!"];date=[Thu Aug 20 12:25:51 2020];

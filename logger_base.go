@@ -6,21 +6,21 @@ import (
 	"log"
 	"os"
 	"strings"
-	"time"
 )
 
-// loggerBasic : определяет базовое поведение любого логгера | defines the basic behavior of any logger
+// loggerBase : определяет базовое поведение любого логгера | defines the base behavior of any logger
 //
-// Для вывода использует стандартный пакет 'log' в консоль.
+// Для вывода использует стандартный пакет 'callingMode' в консоль.
 //
-// Uses the standard 'log' package for output to the console.
+// Uses the standard 'callingMode' package for output to the console.
 //
-type loggerBasic struct{}
+type loggerBase struct {
+}
 
-// newBasic() : constructor
+// newBase() : constructor
 //
-func newBasic() *loggerBasic {
-	return new(loggerBasic)
+func newBase() *loggerBase {
+	return new(loggerBase)
 }
 
 // add : implement iLogger interface
@@ -30,7 +30,7 @@ func newBasic() *loggerBasic {
 //
 // Types that embed a given type can define behavior on their own.
 //
-func (logger *loggerBasic) add(value interface{}, lvl level, date, fn string, param ...string) {
+func (logger *loggerBase) add(log *logData, param ...string) {
 	return
 }
 
@@ -43,28 +43,21 @@ func (logger *loggerBasic) add(value interface{}, lvl level, date, fn string, pa
 // Doesn't use parameters.
 // Types that embed a given type can define behavior on their own.
 //
-func (logger *loggerBasic) createOutputString(value interface{}, lvl level, date, fn string, param ...string) (*outputString, error) {
-	if value == nil {
-		if date == "" {
-			err := strings.Join([]string{
-				"empty 'date' and 'value' log :: time='",
-				time.Now().Format("Mon Jan _2 15:04:05 2006"),
-				"'",
-			}, "")
-			return newOutputString([]byte(""), date, fn, lvl), errors.New(err)
-		}
-		return newOutputString([]byte(""), date, fn, lvl), errors.New("empty log 'value'")
-	}
-	bytes, err := json.Marshal(value)
+func (logger *loggerBase) createOutputString(log *logData, param ...string) (*string, error) {
+	var (
+		out = ""
+	)
+	bytes, err := json.Marshal(log.UserDataOriginal)
 	if err != nil {
 		e := strings.Join([]string{
-			"error in json.Marshal(value)='",
+			"error in json.Value(value)='",
 			err.Error(),
 			"'",
 		}, "")
-		return newOutputString([]byte("empty log 'value'"), date, fn, lvl), errors.New(e)
+		return &out, errors.New(e)
 	}
-	return newOutputString(bytes, date, fn, lvl), nil
+	out = string(bytes)
+	return &out, nil
 }
 
 // output : implement iLogger interface
@@ -76,8 +69,9 @@ func (logger *loggerBasic) createOutputString(value interface{}, lvl level, date
 // Doesn't use parameters.
 // Types that embed a given type can define behavior on their own.
 //
-func (logger *loggerBasic) output(out *outputString, param ...string) error {
+func (logger *loggerBase) output(out *string, param ...string) error {
 	log.SetOutput(os.Stdout)
+	log.SetFlags(log.Flags() &^ (log.Ldate | log.Ltime))
 	log.Println(*out)
 	return nil
 }
@@ -89,7 +83,10 @@ func (logger *loggerBasic) output(out *outputString, param ...string) error {
 //
 // Types that embed a given type can define behavior on their own.
 //
-func (logger *loggerBasic) errorOutput(out *outputString, err error) {
-	update := out.addError(err)
-	log.Println(update)
+func (logger *loggerBase) errorOutput(out *string, err error) {
+	update := strings.Join([]string{
+		*out,
+		"error=[" + err.Error() + "];",
+	}, "")
+	_ = logger.output(&update)
 }

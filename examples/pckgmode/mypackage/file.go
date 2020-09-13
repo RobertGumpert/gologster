@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	logs *gologger.LogInterface
+	logger *gologger.Logger
 )
 
 type number struct {
@@ -14,9 +14,10 @@ type number struct {
 	Prev  *number
 }
 
-func SetLogs(main *gologger.LogInterface) {
-	logs = main
+func SetLogs(main *gologger.Logger) {
+	logger = main
 }
+
 
 func PrintNumbers(num int) {
 
@@ -31,10 +32,10 @@ func PrintNumbers(num int) {
 
 		// Распечатаем сообщение в отдельном потоке.
 		// Let's print the message in a separate thread.
-		logs.Info(currentNumber, gologger.GoConsole())
+		logger.Info(currentNumber)
 
 		prev = currentNumber
 	}
 
-	logs.Info("Print all numbers : " + strconv.Itoa(num))
+	logger.Info("Print all numbers : " + strconv.Itoa(num))
 }

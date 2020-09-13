@@ -1,3 +1,97 @@
+# Новая архитектура!
+
+**В логер добавлены два режима:**
+
+## - Default - с явным выбором режимов запись логов.
+
+```go
+func main() {
+
+	logger := createLogger(getRoot())
+	// Выполним логирование, в этом же потоке.
+	// Let's perform logging in the same thread.
+	logger.Info("App is started!", gologger.OptionConsole(), gologger.OptionFileMutex("log_1"))
+
+
+	logger.Info("App has terminated!", gologger.OptionConsole(), gologger.GoOptionFileMulti("log_1"))
+
+	time.Sleep(5*time.Second)
+}
+
+func createLogger(root string) *gologger.Logger {
+	logger := gologger.Default(
+		//
+		//
+		gologger.DefaultConsoleSimple(gologger.BaseLogTemplate),
+		//
+		//
+		gologger.DefaultFileMutex(
+			gologger.BaseLogTemplate,
+			map[string]string{
+				"log_1": root + "/logs/file_1.txt",
+			},
+		),
+		//
+		//
+		gologger.DefaultFileMulti(
+			gologger.BaseLogTemplate,
+		),
+	)
+	return logger
+}
+
+```
+
+## - Package - с настройкой записи логов для каждого пакета индивидуально.
+
+
+```go
+
+func createLogger(root string) *gologger.Logger {
+	logger := gologger.Packages(map[string][]gologger.PackageInstaller{
+		"main": {
+			gologger.PackageConsoleSimple(gologger.BaseLogTemplate, gologger.MultiThreading),
+		},
+		"mypackage": {
+			gologger.PackageConsoleSimple(gologger.BaseLogTemplate, gologger.SingleThreading),
+		},
+		"/repository/user": {
+			gologger.PackageConsoleSimple(gologger.BaseLogTemplate, gologger.MultiThreading),
+			gologger.PackageFileMutex(gologger.BaseLogTemplate, gologger.SingleThreading, root + "/logs/file_1.txt"),
+		},
+		"/usecase/user": {
+			gologger.PackageConsoleSimple(gologger.BaseLogTemplate, gologger.MultiThreading),
+			gologger.PackageFileMutex(gologger.BaseLogTemplate, gologger.MultiThreading, root + "/logs/file_2.txt"),
+		},
+	}, )
+	return logger
+}
+
+func main() {
+
+	logger := createLogger(getRoot())
+
+	mypackage.SetLogs(logger)
+	urep.SetLogs(logger)
+	ucase.SetLogs(logger)
+
+	mypackage.PrintNumbers(10)
+	urep.Log()
+	ucase.Log()
+
+	// Выполним логирование, в этом же потоке.
+	// Let's perform logging in the same thread.
+	logger.Info("App is started!")
+
+	logger.Info("App has terminated!")
+
+	time.Sleep(5 * time.Second)
+}
+
+```
+
+СМ. ПРИМЕРЫ
+
 # gologger - описание | description.
 
 Логгер создавался для того, чтобы одним вызовом функции логгирования, можно было писать сразу в разные накопители.

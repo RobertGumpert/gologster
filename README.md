@@ -1,4 +1,4 @@
-# Новая архитектура!
+# Новая архитектура. TO DO: новый readme.md
 
 **В логер добавлены два режима:**
 
@@ -6,15 +6,9 @@
 
 ```go
 func main() {
-
 	logger := createLogger(getRoot())
-	// Выполним логирование, в этом же потоке.
-	// Let's perform logging in the same thread.
 	logger.Info("App is started!", gologger.OptionConsole(), gologger.OptionFileMutex("log_1"))
-
-
 	logger.Info("App has terminated!", gologger.OptionConsole(), gologger.GoOptionFileMulti("log_1"))
-
 	time.Sleep(5*time.Second)
 }
 
@@ -68,7 +62,6 @@ func createLogger(root string) *gologger.Logger {
 }
 
 func main() {
-
 	logger := createLogger(getRoot())
 
 	mypackage.SetLogs(logger)
@@ -79,12 +72,8 @@ func main() {
 	urep.Log()
 	ucase.Log()
 
-	// Выполним логирование, в этом же потоке.
-	// Let's perform logging in the same thread.
 	logger.Info("App is started!")
-
 	logger.Info("App has terminated!")
-
 	time.Sleep(5 * time.Second)
 }
 

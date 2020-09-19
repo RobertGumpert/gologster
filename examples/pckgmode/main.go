@@ -4,6 +4,7 @@ import (
 	"./mypackage"
 	urep "./repository/user"
 	ucase "./usecase/user"
+	"github.com/RobertGumpert/gologster"
 	"path/filepath"
 	"runtime"
 	"time"
@@ -37,21 +38,21 @@ func main() {
 	time.Sleep(5 * time.Second)
 }
 
-func createLogger(root string) *gologger.Logger {
-	logger := gologger.Packages(map[string][]gologger.PackageInstaller{
+func createLogger(root string) *gologster.Logger {
+	logger := gologster.Packages(map[string][]gologster.PackageInstaller{
 		"main": {
-			gologger.PackageConsoleSimple(gologger.BaseLogTemplate, gologger.MultiThreading),
+			gologster.PackageConsoleSimple(gologster.BaseLogTemplate, gologster.MultiThreading),
 		},
 		"mypackage": {
-			gologger.PackageConsoleSimple(gologger.BaseLogTemplate, gologger.SingleThreading),
+			gologster.PackageConsoleSimple(gologster.BaseLogTemplate, gologster.SingleThreading),
 		},
 		"/repository/user": {
-			gologger.PackageConsoleSimple(gologger.BaseLogTemplate, gologger.MultiThreading),
-			gologger.PackageFileMutex(gologger.BaseLogTemplate, gologger.SingleThreading, root + "/logs/file_1.txt"),
+			gologster.PackageConsoleSimple(gologster.BaseLogTemplate, gologster.MultiThreading),
+			gologster.PackageFileMutex(gologster.BaseLogTemplate, gologster.SingleThreading, root + "/logs/file_1.txt"),
 		},
 		"/usecase/user": {
-			gologger.PackageConsoleSimple(gologger.BaseLogTemplate, gologger.MultiThreading),
-			gologger.PackageFileMutex(gologger.BaseLogTemplate, gologger.MultiThreading, root + "/logs/file_2.txt"),
+			gologster.PackageConsoleSimple(gologster.BaseLogTemplate, gologster.MultiThreading),
+			gologster.PackageFileMutex(gologster.BaseLogTemplate, gologster.MultiThreading, root + "/logs/file_2.txt"),
 		},
 	}, )
 	return logger

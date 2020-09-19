@@ -1,7 +1,7 @@
 package main
 
 import (
-	gologger "../../../gologger"
+	"github.com/RobertGumpert/gologster"
 	"path/filepath"
 	"runtime"
 	"time"
@@ -18,31 +18,31 @@ func main() {
 	logger := createLogger(getRoot())
 	// Выполним логирование, в этом же потоке.
 	// Let's perform logging in the same thread.
-	logger.Info("App is started!", gologger.OptionConsole(), gologger.OptionFileMutex("log_1"))
+	logger.Info("App is started!", gologster.OptionConsole(), gologster.OptionFileMutex("log_1"))
 
 
-	logger.Info("App has terminated!", gologger.OptionConsole(), gologger.GoOptionFileMulti("log_1"))
+	logger.Info("App has terminated!", gologster.OptionConsole(), gologster.GoOptionFileMulti("log_1"))
 
 	time.Sleep(5*time.Second)
 }
 
-func createLogger(root string) *gologger.Logger {
-	logger := gologger.Default(
+func createLogger(root string) *gologster.Logger {
+	logger := gologster.Default(
 		//
 		//
-		gologger.DefaultConsoleSimple(gologger.BaseLogTemplate),
+		gologster.DefaultConsoleSimple(gologster.BaseLogTemplate),
 		//
 		//
-		gologger.DefaultFileMutex(
-			gologger.BaseLogTemplate,
+		gologster.DefaultFileMutex(
+			gologster.BaseLogTemplate,
 			map[string]string{
 				"log_1": root + "/logs/file_1.txt",
 			},
 		),
 		//
 		//
-		gologger.DefaultFileMulti(
-			gologger.BaseLogTemplate,
+		gologster.DefaultFileMulti(
+			gologster.BaseLogTemplate,
 		),
 	)
 	return logger

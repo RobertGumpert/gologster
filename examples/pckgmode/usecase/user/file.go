@@ -1,14 +1,14 @@
 package user
 
 import (
-	gologger "../../../.."
+	"github.com/RobertGumpert/gologster"
 )
 
 var (
-	logger *gologger.Logger
+	logger *gologster.Logger
 )
 
-func SetLogs(main *gologger.Logger) {
+func SetLogs(main *gologster.Logger) {
 	logger = main
 }
 

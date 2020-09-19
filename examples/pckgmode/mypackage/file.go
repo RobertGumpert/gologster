@@ -1,12 +1,12 @@
 package mypackage
 
 import (
-	gologger "../../.."
+	"github.com/RobertGumpert/gologster"
 	"strconv"
 )
 
 var (
-	logger *gologger.Logger
+	logger *gologster.Logger
 )
 
 type number struct {
@@ -14,7 +14,7 @@ type number struct {
 	Prev  *number
 }
 
-func SetLogs(main *gologger.Logger) {
+func SetLogs(main *gologster.Logger) {
 	logger = main
 }
 

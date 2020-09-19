@@ -1,7 +1,6 @@
 package main
 
 import (
-	gologger "../../../gologger"
 	"./mypackage"
 	urep "./repository/user"
 	ucase "./usecase/user"
@@ -17,6 +16,7 @@ func getRoot() string {
 }
 
 func main() {
+
 
 	logger := createLogger(getRoot())
 

@@ -1,4 +1,4 @@
-package logger
+package gologster
 
 // Для пользовательского интерфейса используется
 // паттерн программирования 'Functional options'.
